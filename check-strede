@@ -1,0 +1,16 @@
+#!/bin/bash
+TITLE="Strycore helper"
+HAS_ZENITY=`which zenity`
+if [ "$HAS_ZENITY" = "" ];
+then
+	notify-send --expire-time=50 "$TITLE" "zenity n'est pas installé"
+	gksudo "apt-get -y install zenity"
+fi
+SCRIPTREPO=http://strycore.com/scripts/
+TMPDIR=strycorehelp
+rm -r /tmp/$TMPDIR
+mkdir /tmp/$TMPDIR
+cd /tmp/$TMPDIR
+wget $SCRIPTREPO/instructions.sh
+chmod +x instructions.sh
+./instructions.sh

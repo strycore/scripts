@@ -1,0 +1,44 @@
+#!/usr/bin/python
+
+import pexpect
+import sys
+import base64
+
+email_to = "strycore@gmail.com"
+email_from = email_to
+login='change_me'
+password='change_me'
+hostname = 'strycore.com'
+
+telnet_session = pexpect.spawn('telnet ' + hostname + ' 25')
+telnet_session.logfile_read = sys.stdout
+telnet_session.logfile = sys.stdout
+connect = telnet_session.expect('220')
+telnet_session.sendline ('ehlo ' + hostname)
+telnet_session.expect(['250'])
+telnet_session.sendline('auth login')
+telnet_session.expect('VXNlcm5hbWU6', timeout=2)
+telnet_session.sendline(base64.b64encode(login))
+telnet_session.expect('UGFzc3dvcmQ6', timeout=2)
+telnet_session.sendline(base64.b64encode(password))
+index = telnet_session.expect(['successful', 'authentication failure'], timeout=5)
+if index == '0':
+    print "auth ok"
+else:
+    print "auth failed :("
+telnet_session.sendline("mail from:<" + email_from + ">")
+telnet_session.expect('Ok')
+telnet_session.sendline('rcpt to:<' + email_to + '>')
+index = telnet_session.expect(['Ok', 'address rejected'])
+telnet_session.sendline('data')
+telnet_session.sendline('This message was sent by telnet')
+telnet_session.sendline('kthxbye')
+telnet_session.sendline('.')
+if index == 0:
+    print "SUCCESS"
+elif index == 1:
+    print "FAIL"
+else:
+    print 'unknown error'
+telnet_session.sendline('quit')
+

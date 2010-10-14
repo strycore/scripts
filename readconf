@@ -1,0 +1,22 @@
+#!/bin/bash
+
+function readconf
+{
+	sed -n '
+	/\['"$(hostname)"'/,/\[.*\]/ {
+		s/\[.*//
+		s/[ ^I]*$//
+		/^$/ d
+		p
+	}
+	' < $1
+}
+OLDIFS=$IFS
+IFS="\n"
+val=$(readconf $HOME/testsed)
+for i in $val ; do
+	echo $i
+done
+IFS=$OLDIFS
+
+

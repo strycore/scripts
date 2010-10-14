@@ -1,0 +1,32 @@
+#!/bin/bash
+#
+# Deploy a Redmine backup buiilt with redmine-backup
+#
+# Version 0.1 (2010/09/01)
+# (c) 2010 Mathieu Comandon 
+# Licensed under the terms of the GPL Version 3
+#
+
+set -e
+
+backup=$(basename $1)
+if [ $(dirname $1) = '.' ] ; then
+    backup_path=`pwd`
+else
+    backup_path=$(pwd)$(dirname $backup)
+fi
+
+cd /tmp
+backup_fullpath=${backup_path}/${backup}
+echo "Extracting $backup_fullpath to /tmp"
+tar xzf $backup_fullpath
+suffix=$(echo $backup | sed 's|redmine-full-backup-||'  | sed 's|.tar.gz||')
+
+cd /
+tar xzf /tmp/redmine-db-$suffix.tar.gz
+cd /etc/redmine
+tar xzf /tmp/redmine-etc-$suffix.tar.gz
+cd /var/lib/redmine
+tar xzf /tmp/redmine-files-$suffix.tar.gz
+cd /var/log/redmine
+tar xzf /tmp/redmine-log-$suffix.tar.gz

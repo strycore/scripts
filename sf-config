@@ -1,0 +1,60 @@
+#!/bin/bash
+
+if [ ! -d apps -o ! -d config -o ! -d web -o ! -d lib ] ; then
+    echo "not in a symfony project"
+    exit 2
+fi
+
+if [ -z $DEBEMAIL ] ; then
+    echo "no email set, export your mail address in DEBEMAIL"
+    exit 2
+fi
+
+APP_NAME=$(basename $PWD)
+ADMIN_EMAIL=$DEBEMAIL
+HOSTNAME=$(hostname)
+APP_PATH=$PWD
+
+if [ -d $PWD/lib/symfony ] ; then
+    SYMFONY_PATH=$PWD/lib/symfony
+elif [ -d $PWD/lib/vendor/symfony ] ; then
+    SYMFONY_PATH=$PWD/lib/vendor/symfony
+else
+    echo "can't find symfony"
+    exit 2
+fi
+
+echo "App name: $APP_NAME"
+echo "Admin email: $ADMIN_EMAIL"
+echo "Hostname: $HOSTNAME"
+echo "App path: $APP_PATH"
+echo "Symfony path: $SYMFONY_PATH"
+echo "Is this correct? (y/N)"
+read ANSWER
+if [ $ANSWER != "y" ] ; then 
+    exit 2
+fi
+SCRIPT_PATH=$(which $0)
+echo $SCRIPT_PATH
+ROOTDIR=$(dirname $SCRIPT_PATH)
+cp $ROOTDIR/sf-apache-template /tmp/$APP_NAME
+
+sed -i "s/ADMIN_EMAIL/$ADMIN_EMAIL/" /tmp/$APP_NAME
+sed -i "s/APP_NAME/$APP_NAME/" /tmp/$APP_NAME
+sed -i "s/HOSTNAME/$HOSTNAME/" /tmp/$APP_NAME
+sed -i "s|APP_PATH|$APP_PATH|" /tmp/$APP_NAME
+sed -i "s|SYMFONY_PATH|$SYMFONY_PATH|" /tmp/$APP_NAME
+
+if [ -f /etc/apache2/sites-available/$APP_NAME ] ; then
+    echo "application already installed"
+    exit 2
+fi
+
+
+if [ $(id -u) -eq 0 ] ; then
+    cp /tmp/$APP_NAME /etc/apache2/sites-available/$APP_NAME
+    a2ensite $APP_NAME
+    /etc/init.d/apache2 reload
+else
+    echo "can't copy the apache configuration, need root access"
+fi

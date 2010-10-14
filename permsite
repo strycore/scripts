@@ -1,0 +1,23 @@
+#!/bin/bash
+# permsites : Checks permission of all files served by Apache 
+# and sets them to www-data 
+# Tip: Add yourself to the www-data group if you're the webmaster
+# version 0.1 (2010/03/10)
+# (c) 2010 Mathieu Comandon 
+# Licensed under the terms of the GPL Version 3
+#
+# Usage:
+# permsites
+
+set -e
+
+SUDO="gksu"
+
+apachedir="/etc/apache2/sites-enabled/"
+for file in $(ls $apachedir); do
+    root=$(grep DocumentRoot $apachedir$file | sed 's|[ \t]*DocumentRoot[ \t]*||' | tr -d "\"") 
+    echo $root
+    $SUDO "chown -R www-data:www-data $root"
+    $SUDO "find $root -type d -exec chmod -R ug+rwx \{\} \;"
+    $SUDO "chmod -R ug+rw $root"
+done

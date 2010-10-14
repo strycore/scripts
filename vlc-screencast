@@ -1,0 +1,71 @@
+#!/bin/bash
+
+set -e
+
+if [ ! $(which vlc) ] ; then
+    echo "Vlc is not installed"
+    exit 2
+fi
+
+##Options
+
+##Video size
+height="480"
+width="640"
+
+##Encoder
+#video_encoder="ffmpeg"
+#video_encoder="x264"
+video_encoder="theora"
+
+##Video Codec	
+#video_codec="h264"
+video_codec="vorb"
+
+#Input
+input="screen://"
+#input="v4l2://"
+fps=10
+
+#Output access
+access="http"
+##	file
+##	udp
+##	rtp
+##	http
+##	https
+##	mmsh	: mms over http
+
+
+filename="stream.ogg"
+
+#Multiplexer
+mux="ogg"
+#mux="ts"
+#mux="ps"
+
+video_bitrate="500"
+port="8090"
+desktop_ip="192.168.1.11"
+laptop_ip="192.168.1.10"
+universal_ip="0.0.0.0"
+ip=$universal_ip
+
+#VLC Parameters
+
+screen_options=
+if [ $input="screen://" ]; then
+	screen_options=" --screen-fps 10 --screen-mouse-image --screen-follow-mouse --screen-width $width --screen-height $height"
+fi
+
+if [ $access="http" ]; then
+	dst=$ip:$port/$filename
+fi
+
+transcode_options="vcodec=$video_codec,venc=$video_encoder,fps=$fps,vb=$video_bitrate,width=$width,heigth=$height"
+std_options="access=http,mux=$mux,dst=$dst"
+sout="#transcode{$transcode_options}:std{$std_options}"
+
+vlc_options="$input $screen_options --sout \"$sout\""
+echo "vlc $vlc_options"
+cvlc "$vlc_options" 2>/dev/null

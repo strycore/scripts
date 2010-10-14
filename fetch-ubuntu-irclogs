@@ -1,0 +1,11 @@
+#!/bin/bash
+
+year="2009"
+month="10"
+for day in `seq -w 31`; do
+    wget http://irclogs.ubuntu.com/$year/$month/$day/%23ubuntu-desktop.txt -O desktop-$year-$month-$day.txt
+    wget http://irclogs.ubuntu.com/$year/$month/$day/%23ubuntu-devel.txt -O devel-$year-$month-$day.txt
+    wget http://irclogs.ubuntu.com/$year/$month/$day/%23ubuntu-meeting.txt -O meeting-$year-$month-$day.txt
+    wget http://irclogs.ubuntu.com/$year/$month/$day/%23ubuntu-news.txt -O news-$year-$month-$day.txt
+    wget http://irclogs.ubuntu.com/$year/$month/$day/%23ubuntu-bugs.txt -O bugs-$year-$month-$day.txt
+done

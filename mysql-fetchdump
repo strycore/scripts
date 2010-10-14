@@ -1,0 +1,104 @@
+#!/bin/bash
+#
+# mysql-fetchdump : Fetchs a MySQL dump from a distant server with SSH
+# Only works with key-type SSH authentication
+# See : http://wiki.strycore.com/index.php/Ssh if you don't know how to 
+# setup ssh to login without a password.
+#
+# Version 0.1 (2010/07/22)
+# (c) 2010 Mathieu Comandon 
+# Licensed under the terms of the GPL Version 3
+#
+
+set -e
+destdir='/tmp'
+ssh_user=$USER
+usage()
+{
+cat << EOF
+Usage: $0 --host=hostname --login=user --user=mysql_user --password=mysql_password --database=mysql_database
+Dumps a MySQL database with the schema and data
+
+OPTIONS:
+  -h, --host=host            IP or domain name of the distant server
+  -l, --login=user           Unix account on the remote server (Default: your local login)  
+  -u, --user=user            MySQL user for the remote server
+  -p, --password=password    MySQL password for the remote server
+  -d, --database=database    Name of the database on the remote server
+  -o, --output-dir           Write dump file to this directory (Default: /tmp)
+  -v, --verbose              Verbose mode
+  -h, --help                 Prints this message
+EOF
+}
+
+#Parse arguments
+if [ "$#" -eq 0 ] ; then
+    usage
+    exit 2
+fi
+
+PARAMS=`getopt -n $0 -o u:p:d:o:l:H:hv --long user:,password:,database:,output_dir:,host:,login:,verbose,help -- "$@"`
+eval set -- "$PARAMS"
+while true ; do
+    case "$1" in
+        -u|--user) mysql_user=$2; shift 2 ;;
+        -p|--password) mysql_password=$2 ; shift 2 ;;
+        -d|--database) mysql_database=$2 ; shift 2 ;;
+        -o|--output-dir) destdir=$2 ; shift 2 ;;
+        -l|--login) ssh_user=$2 ; shift 2 ;;
+        -H|--host) host=$2 ; shift 2 ;;
+        -v|--verbose) verbose=1 ; shift ;;
+        -h|--help) usage ; exit 1 ;;
+        --) shift ; break ;;
+        *) usage ; exit 2 ;;
+    esac
+done
+
+#Error checking
+error_state=0;
+
+if [ -z "$mysql_user" ] ; then
+    echo "You MUST specify MySQL user !"
+    error_state=1
+fi
+
+if [ -z "$host" ] ; then
+    echo "No remote host specified."
+    error_state=1
+fi
+
+if [ -z "$mysql_password" ] ; then
+    echo "You MUST specify MySQL password !"
+    error_state=1
+fi
+
+if [ -z "$mysql_database" ] ; then
+    echo "You MUST specify MySQL database !"
+    error_state=1
+fi
+
+if [ ! -d "$destdir" ] ; then
+    echo "Destination directory doesn't exist !"
+    error_state=1    
+fi
+
+if [ "$error_state" = 1 ] ; then
+    echo "There are errors in your arguments, exiting."
+    exit 2
+fi
+echo $destdir
+#Dump remote database
+remote_command="mysql-autodump -d ${mysql_database} -u ${mysql_user} -p ${mysql_password} -z"
+if [ $verbose ] ; then 
+    echo "Dumping remote database"
+fi
+dumpfile=$(ssh $ssh_user@$host $remote_command)
+if [ $verbose ] ; then
+    echo "Fetching remote dump"
+fi
+
+destfile=$destdir/$(basename $dumpfile)
+scp -q $ssh_user@$host:$dumpfile $destfile
+gunzip $destfile
+destfile=`echo $destfile | sed 's/\(.*\)\..*/\1/'`
+echo $destfile

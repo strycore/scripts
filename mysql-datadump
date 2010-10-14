@@ -1,0 +1,101 @@
+#!/bin/bash
+#
+# mysql-datadump : Dumps data from a MySQL database without the schema
+# This script is useful to update your DB schema and reimporting your 
+# existing data.
+#
+# Version 0.1 (2010/07/21)
+# (c) 2010 Mathieu Comandon 
+# Licensed under the terms of the GPL Version 3
+#
+
+set -e
+
+destdir='/tmp'
+compact=0
+
+usage()
+{
+cat << EOF
+Usage: $0 --user=mysql_user --password=mysql_password --database=mysql_database
+This script dumps the data (and only the data) of a MySQL database
+
+OPTIONS:
+  -u, --user=user            MySQL user
+  -p, --password=password    MySQL password
+  -d, --database=database    Name of the database
+  -o, --output-dir           Write dump file to this directory (Default: /tmp)
+  -c, --compact              Use compact mode
+  -z, --gzip                 Gzip the output file
+  -h, --help                 Prints this message
+EOF
+}
+
+
+#Parse arguments
+if [ "$#" -eq 0 ] ; then
+    usage
+    exit 2
+fi
+PARAMS=`getopt -n $0 -o u:p:d:o:czh --long user:,password:,database:,output_dir:,compact,gzip,help -- "$@"`
+eval set -- "$PARAMS"
+while true ; do
+    case "$1" in
+        -u|--user) mysql_user=$2; shift 2 ;;
+        -p|--password) mysql_password=$2 ; shift 2 ;;
+        -d|--database) mysql_database=$2 ; shift 2 ;;
+        -c|--compact) compact=1 ; shift ;;
+        -o|--output-dir) destdir=$2 ; shift 2 ;;
+        -z|--gzip) gzip_enable=1 ; shift ;;
+        -h|--help) usage ; exit 1 ;;
+        --) shift ; break ;;
+        *) usage ; exit 2 ;;
+    esac
+done
+
+#Error checking
+error_state=0;
+
+if [ "$mysql_user" = '' ] ; then
+    echo "You MUST specify MySQL user !"
+    error_state=1
+fi
+
+if [ "$mysql_password" = '' ] ; then
+    echo "You MUST specify MySQL password !"
+    error_state=1
+fi
+
+if [ "$mysql_database" = '' ] ; then
+    echo "You MUST specify MySQL database !"
+    error_state=1
+fi
+
+if [ ! -d "$destdir" ] ; then
+    echo "Destination directory doesn't exist !"
+    error_state=1    
+fi
+
+if [ "$error_state" = 1 ] ; then
+    echo "There are errors in your arguments, exiting."
+    exit 2
+fi
+
+#Dump data to file
+dumpfile=$destdir'/'$mysql_database'-data-'$(date +%Y%m%d%H%M)'.sql'
+compact_arg=""
+if [ "$compact" = 1 ] ; then
+    compact_arg="--compact"
+fi
+#
+mysqldump --user $mysql_user --password=$mysql_password --skip-triggers --complete-insert --no-create-info $compact_arg  $mysql_database  > $dumpfile
+
+#Gzip
+if [ $gzip_enable ] ; then
+    gzip $dumpfile
+    dumpfile=$dumpfile".gz"    
+fi
+
+#Finish
+echo $dumpfile
+exit 0

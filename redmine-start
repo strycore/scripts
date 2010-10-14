@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+
+cd /usr/share/redmine
+IP=$(ifconfig eth0 | grep 'inet adr:' | cut -d: -f2 | awk '{ print $1}')
+
+sudo -u www-data X_DEBIAN_SITEID="default" ruby script/server mongrel  -e production -b $IP
+

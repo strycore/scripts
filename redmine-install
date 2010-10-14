@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+apt-get install redmine
+
+cd /usr/share/redmine
+mkdir -p tmp
+chown www-data:www-data tmp
+mkdir -p log
+touch log/production.log
+chown www-data:www-data log -R
+IP=$(ifconfig eth0 | grep 'inet adr:' | cut -d: -f2 | awk '{ print $1}')
+
+sudo -u www-data X_DEBIAN_SITEID="default" ruby script/server webrick -e production -b $IP
+

@@ -1,0 +1,22 @@
+#!/bin/bash 
+
+set -e
+
+BACKUP_SUFFIX=$(date +%Y%m%d-%s)
+BACKUP_DIR=$HOME/redmine-backup/redmine-$BACKUP_SUFFIX
+mkdir -p $BACKUP_DIR
+cd /var/lib/redmine
+tar cvzf $BACKUP_DIR/redmine-files-$BACKUP_SUFFIX.tar.gz .
+
+
+cd /var/log/redmine
+tar cvzf $BACKUP_DIR/redmine-log-$BACKUP_SUFFIX.tar.gz .
+
+cd /etc/redmine
+tar cvzf $BACKUP_DIR/redmine-etc-$BACKUP_SUFFIX.tar.gz .
+ADAPTER=$(grep adapter /etc/redmine/default/database.yml | cut -d: -f2 | awk '{print $1}')
+DATABASE=$(grep database /etc/redmine/default/database.yml | cut -d: -f2 | awk '{print $1}')
+if [ $ADAPTER = 'sqlite3' ] ; then
+	tar cvzf $BACKUP_DIR/redmine-db-$BACKUP_SUFFIX.tar.gz $DATABASE
+fi
+tar cvzf $BACKUP_DIR/../redmine-full-backup-$BACKUP_SUFFIX.tar.gz $BACKUP_DIR

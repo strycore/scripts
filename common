@@ -1,0 +1,23 @@
+#Watches for process with name $1 to be terminated then call $2
+function process_on_death()
+{
+    pid=`pgrep $1`
+    while [ "$pid" ]
+    do
+        sleep 1
+        pid=`pgrep $1`
+    done
+    $2
+}
+
+#Loops until a process with name $1 spawn then calls $2
+function process_on_spawn()
+{
+    pid=`pgrep $1`
+    while [ -z "$pid" ]
+    do
+        sleep 1
+        pid=`pgrep $1`
+    done
+    $2
+}

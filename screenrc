@@ -1,0 +1,6 @@
+screen -t root 0 sudo -s
+screen -t shell 1 bash
+screen -t shell 2 bash
+screen -t shell 3 bash
+screen -t shell 4 bash
+

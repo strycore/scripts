@@ -1,0 +1,19 @@
+#!/bin/bash
+# update : Convinient shortcut to keep your Debian or Ubuntu system up to date 
+# version 0.1 (2010/03/10)
+# (c) 2010 Mathieu Comandon 
+# Licensed under the terms of the GPL Version 3
+#
+# Usage:
+# update
+set -e
+
+SUDO="sudo"
+APT="apt-get"
+
+echo "Updating cache"
+$SUDO $APT update
+echo "Upgrading system"
+$SUDO $APT upgrade
+$SUDO $APT dist-upgrade
+echo "Done"

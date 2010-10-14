@@ -1,0 +1,13 @@
+#!/bin/bash
+echo 'Looking up ' $1
+curl -X POST -d '{
+  "version": "1.1.0",
+  "host": "perdu.com",
+  "request_address": true,
+  "address_language": "en_GB",
+  "wifi_towers": [
+    {
+        "mac_address": "'${1}'"
+    }
+  ]
+}' https://www.google.com/loc/json

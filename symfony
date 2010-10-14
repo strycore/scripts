@@ -1,0 +1,21 @@
+#!/bin/bash
+
+working_dir=$(pwd)
+current_dir=$working_dir
+
+while [ ! $current_dir = '/' ] ;
+do
+	current_dir=$(pwd)
+	if [ -f $current_dir"/symfony" ] ; then
+		symfony_root=$current_dir
+		break
+	fi
+	cd ..
+done
+cd $working_dir
+if [ -z $symfony_root ] ; then
+	echo "Error : not inside a symfony project"
+	exit 2
+fi
+
+php $symfony_root"/symfony" "$@"

@@ -1,0 +1,2 @@
+#!/bin/bash
+gnome-do --debug > $HOME/do.log

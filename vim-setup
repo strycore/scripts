@@ -1,0 +1,59 @@
+#!/bin/bash
+
+set -e
+
+#Usage :
+# $1 : plugin name
+# $2 : download url
+function download()
+{
+    if [ ! -f "$1" ] ; then
+        wget $2 -O $1
+    fi
+}
+cp $HOME/bin/vimrc $HOME/.vimrc
+
+mkdir -p $HOME/.vim/plugin
+mkdir -p $HOME/.vim/colors
+
+cd $HOME/.vim
+
+if [ ! -f ./plugin/NERD_tree.vim ] ; then
+    wget http://www.vim.org/scripts/download_script.php?src_id=9870 -O NERD_tree.zip
+    unzip NERD_tree.zip
+    rm NERD_tree.zip
+fi
+
+
+if [ ! -f ./plugin/taglist.vim ] ; then
+    wget "http://vim.sourceforge.net/scripts/download_script.php?src_id=7701" -O taglist_45.zip
+    unzip taglist_45.zip
+    rm taglist_45.zip
+fi
+
+if [ ! -f ./plugin/project.vim ]; then
+    wget http://www.vim.org/scripts/download_script.php?src_id=6273 -O project-1.4.1.tar.gz
+    tar xzf project-1.4.1.tar.gz
+    rm project-1.4.1.tar.gz
+fi
+
+if [ ! -f ./colors/desert256.vim ] ; then
+    wget "http://www.vim.org/scripts/download_script.php?src_id=4055" -O ./colors/desert256.vim
+fi
+
+if [ ! -f ./colors/railscasts.vim ] ; then
+    wget "http://www.vim.org/scripts/download_script.php?src_id=8379" -O ./colors/railscasts.vim
+fi
+
+if [ ! -f ./plugin/symfony.vim ] ; then
+    wget "http://www.vim.org/scripts/download_script.php?src_id=8739" -O ./plugin/symfony.vim
+fi
+
+if [ ! -f ./ack.tar.gz ] ; then
+    wget "http://www.vim.org/scripts/download_script.php?src_id=10433" -O ./ack.tar.gz
+    tar xzf ack.tar.gz
+fi
+
+if [ ! -f ./plugin/zencoding.vim ] ; then
+    wget "http://www.vim.org/scripts/download_script.php?src_id=13765" -O ./plugin/zencoding.vim
+fi

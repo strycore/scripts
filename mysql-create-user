@@ -1,0 +1,77 @@
+#!/bin/bash
+#
+# mysql-create-user : Create a new user and database on your local mysql server
+#
+# Version 0.1 (2010/09/01)
+# (c) 2010 Mathieu Comandon 
+# Licensed under the terms of the GPL Version 3
+#
+
+set -e
+
+usage()
+{
+cat << EOF
+Usage: $0 --user=mysql_user --password=mysql_password 
+Create a new user and database on your local mysql server
+
+OPTIONS:
+  -u, --user=user            MySQL user
+  -p, --password=password    MySQL password
+  -r, --root-password        MySQL root password
+  -h, --help                 Prints this message
+EOF
+}
+
+#Parse arguments
+if [ "$#" -eq 0 ] ; then
+    usage
+    exit 2
+fi
+PARAMS=`getopt -n $0 -o u:p:r:h --long user:,password:,root-password:,help -- "$@"`
+eval set -- "$PARAMS"
+while true ; do
+    case "$1" in
+        -u|--user) mysql_user=$2; shift 2 ;;
+        -p|--password) mysql_password=$2 ; shift 2 ;;
+    -r|--root-password) root_password=$2 ; shift 2 ;;
+        -h|--help) usage ; exit 1 ;;
+        --) shift ; break ;;
+        *) usage ; exit 2 ;;
+    esac
+done
+#Error checking
+error_state=0;
+
+if [ -z "$mysql_user" ] ; then
+    echo "You MUST specify MySQL user !"
+    error_state=1
+fi
+
+if [ -z "$mysql_password" ] ; then
+    echo "You MUST specify MySQL password !"
+    error_state=1
+fi
+
+if [ -z "$mysql_password" ] ; then
+    echo "You MUST specify MySQL password !"
+    error_state=1
+fi
+
+if [ "$error_state" = 1 ] ; then
+    echo "There are errors in your arguments, exiting."
+    exit 2
+fi
+
+cd /tmp
+cat > create_user.sql << EOF
+ GRANT USAGE ON *.* TO '$mysql_user'@'localhost';
+ DROP USER '$mysql_user'@'localhost';
+ DROP DATABASE IF EXISTS $mysql_user ;
+ CREATE USER '$mysql_user'@'localhost' IDENTIFIED BY '$mysql_password';
+ GRANT USAGE ON * . * TO '$mysql_user'@'localhost' IDENTIFIED BY '$mysql_password' WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0   MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;
+ CREATE DATABASE IF NOT EXISTS $mysql_user character set utf8;
+ GRANT ALL PRIVILEGES ON $mysql_user . * TO '$mysql_user'@'localhost';
+EOF
+mysql -uroot -p$root_password < create_user.sql
+rm create_user.sql

@@ -1,0 +1,60 @@
+#!/bin/bash
+
+set -e
+
+data_dir=$HOME
+geoip_dir=GeoLiteCity_20100701
+geoip_path=$data_dir'/'$geoip_dir'.zip'
+geoip_md5=8e6850e5f6e8e672b8317877034b55f2
+geoip_url="http://geolite.maxmind.com/download/geoip/database/GeoLiteCity_CSV/"
+tmp_dir='/tmp/geoip'
+
+checkmd5()
+{
+	md5_result=$(md5sum $1 | awk '{ print $1 }')
+	if [ "$md5_result" = "$2" ] ; then
+		echo "ok"
+	else
+		echo "bad_checksum"
+	fi
+}
+
+valid=$(checkmd5 $geoip_path $geoip_md5)
+
+if [ $valid = "bad_checksum" ] ; then
+	echo "Corrupt file"
+	exit 2
+fi
+
+if [ -d $tmp_dir ] ; then
+	rm -r $tmp_dir
+fi
+mkdir -p $tmp_dir
+unzip $geoip_path -d $tmp_dir
+
+mysql --user=root --password=admin mysql << EOQ
+DROP DATABASE IF EXISTS geoip;
+GRANT USAGE ON *.* TO 'geoip'@'localhost';
+REVOKE ALL PRIVILEGES ON *.* FROM geoip@localhost;
+DROP USER 'geoip'@'localhost';
+FLUSH PRIVILEGES;
+CREATE USER 'geoip'@'localhost' IDENTIFIED BY 'geoip';
+GRANT USAGE ON * . * TO 'geoip'@'localhost' IDENTIFIED BY 'geoip' WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0 ;
+CREATE DATABASE IF NOT EXISTS geoip ;
+GRANT ALL PRIVILEGES ON geoip . * TO 'geoip'@'localhost';
+FLUSH PRIVILEGES;
+EOQ
+
+mysql --user=geoip --password=geoip geoip << EOQ
+
+EOQ
+
+cd $tmp_dir'/'$geoip_dir
+
+#sudo cp GeoLiteCity-Location.csv /var/lib/mysql/geoip/blocks.csv
+#mysqlimport --fields-terminated-by="," --fields-optionally-enclosed-by="\"" --lines-terminated-by="\n" --host=localhost --user=root --password=password geoip csv.csv
+#sudo rm /var/lib/mysql/geoip/blocks.csv
+
+
+#rm -r $tmp_dir
+

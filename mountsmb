@@ -1,0 +1,25 @@
+#!/bin/bash
+
+MOUNT=$(which mount.cifs)
+DESTDIR="$HOME/Partages/"
+SMB_HOST="192.168.33.11"
+SMB_USER="admin"
+SMB_PASSWD="admin"
+SHARES=('qweb' 'public')
+echo "checking smbfs"
+if [ ! $MOUNT ] ; then
+    echo "smbfs is not installed"
+    sudo apt-get install -y smbfs
+fi
+
+for share in ${SHARES[*]} ; do
+    echo "Mounting "$share
+    mkdir -p ${DESTDIR}${share}
+    if [ 1 = $(mount | grep ${DESTDIR}${share} | wc -l) ] ; then
+      echo "$share already mounted"
+    else
+      sudo mount.cifs //$SMB_HOST/$share ${DESTDIR}${share} \
+            -o username=$SMB_USER,password=$SMB_PASSWD,uid=$(id -u $USER),gid=$(id -g $USER)
+    fi
+done
+

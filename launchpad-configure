@@ -1,0 +1,10 @@
+#!/bin/bash
+
+touch $HOME/.dput.cf
+
+echo "[strycore-ppa]
+fqdn = ppa.launchpad.net
+method = ftp
+incoming = ~strycore/ppa/ubuntu/
+login = anonymous
+allow_unsigned_uploads = 0" > $HOME/.dput.cf

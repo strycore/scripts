@@ -1,0 +1,37 @@
+#!/bin/bash
+
+set -e
+
+if [ ! -f $PWD/symfony  ] ; then
+    echo 'Not inside a symfony project'
+    exit 2
+fi
+
+if [ ! -d $PWD/config ] ; then
+    echo 'Invalid symfony project, dir config does not exists'
+    exit 2
+fi
+
+if [ ! -d $PWD/config/apache ] ; then
+    echo 'Project is not ready for deployement, missing config/apache dir'
+    exit 2
+fi
+
+if [ ! $(ls config/apache | wc -l) = '1' ] ; then
+    echo 'I get lost when there are too many files'
+    exit 2
+fi
+
+vhost_conf=$(ls config/apache)
+
+if [ -f /etc/apache2/sites-available/$vhost_conf ] ; then
+    echo 'There seems to be a vhost with that name already in you apache configuration'
+    exit 2
+fi
+
+echo "Copying vhost configuration to /etc/apache2/sites-available, this requires root privileges."
+
+sudo cp config/apache/$vhost_conf /etc/apache2/sites-available
+
+echo 'TODO : Edit /etc/host to point to project dir'
+

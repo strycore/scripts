@@ -1,0 +1,95 @@
+#!/bin/bash
+#
+# imagecrop : Resize and crop image to specified size
+#
+# Version 0.2 (2010/07/21)
+# (c) 2010 Mathieu Comandon 
+# Licensed under the terms of the GPL Version 3
+#
+set -e
+
+CONVERT=convert
+
+if [ -z $(which $CONVERT) ] ; then
+	echo "imagemagick is not installed"
+	exit 2
+fi
+
+usage()
+{
+cat << EOF
+Usage: $0 
+Resize an image to a given maximum size
+
+OPTIONS:
+  -d, --dir=PATH	Input directory containing the images to convert
+  -s, --size=SIZE	Maximum size of the output image
+  -r, --keep-ratio	Keep ratio, do not make a square image
+  -v, --verbose		Verbose mode				
+  -h, --help		Prints this message
+EOF
+}
+
+#Parse arguments
+if [ "$#" -eq 0 ] ; then
+    usage
+    exit 2
+fi
+
+PARAMS=`getopt -n $0 -o d:s:rvh --long dir:,size:,keep-ratio,,verbose,help -- "$@"`
+eval set -- "$PARAMS"
+while true ; do
+    case "$1" in
+        -d|--dir) basedir=$2; shift 2 ;;
+        -s|--size) size=$2; shift 2 ;;
+        -h|--help) usage ; exit 1 ;;
+        -v|--verbose) verbose=1 ; shift ;;
+        -r|--keep-ratio) keep_ratio=1; shift ;;
+        --) shift ; break ;;
+        *) usage ; exit 2 ;;
+    esac
+done
+
+#Error checking
+error_state=0;
+
+if [ -z "$basedir" ] ; then
+    echo "No input dir specified !"
+    error_state=1
+fi
+
+if [ -z "$size" ] ; then
+    echo "No size specified !"
+    error_state=1
+fi
+
+if [ "$error_state" = 1 ] ; then
+    echo "There are errors in your arguments, exiting."
+    exit 2
+fi
+
+ext='.jpg'
+
+for sourcefile in $(ls $basedir) ; do
+	filename=${sourcefile%\.*}
+	destfile=${filename}_${size}${ext}
+	if [ "$verbose" = 1 ] ; then
+		echo "Converting "$basedir$sourcefile
+	fi
+	if [ -z $keep_ratio ] ; then
+		square_image_params="-gravity center -crop ${size}x${size}+0+0 +repage"
+		geometry_modifier="^"
+	fi
+	$CONVERT  -thumbnail "${size}x${size}${geometry_modifier}" $square_image_params -sharpen 0.25x0.25  -quality 95 -format jpg $basedir$sourcefile $basedir$destfile
+done
+
+# TODO
+# Adding Annotation To Cropped Thumbnails Using ImageMagick
+# http://return-true.com/2009/03/adding-annotation-to-cropped-thumbnails-using-imagemagick/
+
+# Cropping The Thumbnails
+# $CONVERT -size 120x108 'path/to/file.jpg'  -thumbnail 120x108^ -gravity center -extent 120x108 'path/to/output.jpg'
+
+# Adding The Annotation
+# $CONVERT -size 120x108 'path/to/file.jpg'  -thumbnail 120x108^ -gravity center -extent 120x108 -gravity south -background black -fill '#cccccc' -font '/path/to/font.ttf' -pointsize 8 -splice 0x12 -annotate +0+1 '%[width]x%[height] %[size]' 'path/to/output.jpg'
+

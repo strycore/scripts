@@ -1,0 +1,20 @@
+#!/bin/bash
+# alview : Apache 2 log viewer using terminator and a dual screen
+# version 0.1 (2010/03/10)
+# (c) 2010 Mathieu Comandon 
+# Licensed under the terms of the GPL Version 3
+#
+# Usage:
+# alview [VHOST]
+
+apachedir="/etc/apache2/sites-enabled/"
+for file in $(ls $apachedir)
+do
+    if [ $file == $1 ]; then
+        errorlog=$(grep ErrorLog $apachedir$file | sed -e 's/ErrorLog//')
+        accesslog=$(grep CustomLog $apachedir$file | sed -e 's/CustomLog//')
+    fi
+    
+done
+terminator  -e "tail -n 99 -f $errorlog" -b --geometry=1280x525+1680+0&
+terminator  -e "tail -n 99 -f $accesslog" -b --geometry=1280x525+1680+525&

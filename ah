@@ -1,0 +1,173 @@
+#!/usr/bin/python
+# ah - apache helper aka AH-64 
+#
+# (c) 2010, Mathieu Comandon <strycore@gmail.com>
+# License : GPL-3
+# For more information read : /usr/share/common-licenses/GPL-3
+#
+# Goal : 64 funcionnalites
+#  1 - Edit /etc/hosts
+#  2 - Set permission to all served files to www-data
+#  3 - Restart Apache
+#  4 - Edit vhost config
+#  5 - browse files
+#  6 - browse website
+#  7 - list all vhosts
+#  8 - view error log
+#  9 - clear error log
+# 10 - view witch sites are enabled
+# 11 - enable or disable a vhost
+# 12 - edit php.ini
+
+import sys, os, gtk, appindicator
+
+TERM="terminator"
+PHPINI_PATH = "/etc/php5/apache2/php.ini"
+PERMSITE_PATH = os.path.expanduser('~')+'/bin/'
+FILE_BROWSER = "nautilus"
+WEB_BROWSER = "firefox"
+EDITOR = "gedit"
+
+sitesavailable = os.listdir("/etc/apache2/sites-available/")
+sitesenabled = os.listdir("/etc/apache2/sites-enabled")
+
+def edit_hosts(widget):
+     os.system("gksu %s /etc/hosts &" % EDITOR)
+
+def edit_phpini(widget):
+     os.system("gksu %s %s &" % (EDITOR,PHPINI_PATH))
+
+def chown_fix(widget):
+     os.system("xterm %s" % PERMSITE_PATH)
+
+def restart_apache(widget):
+         os.system("%s -e \"gksu /etc/init.d/apache2 restart\" --geometry=600x300+100+100" % TERM)
+
+def get_apache_info(site):
+    vhost_conf = open('/etc/apache2/sites-available/'+site,'r')
+    line = "-"
+    apache_info = {'server_name':'localhost','document_root':'/var/www'}
+    while line:
+        line = vhost_conf.readline()
+        if "ErrorLog" in line:
+            apache_info['error_log'] = str.strip(line[line.find("ErrorLog")+len("ErrorLog"):])
+        if "ServerName" in line:
+            apache_info['server_name'] = str.strip(line[line.find("ServerName")+len("ServerName"):])
+        if "DocumentRoot" in line:
+            apache_info['document_root'] = str.strip(line[line.find("DocumentRoot")+len("DocumentRoot"):]) 
+    return apache_info
+
+def browse_files (widget,data):
+    os.system("%s %s" % (FILE_BROWSER, get_apache_info(data)['document_root']))
+
+def browse_website(widget,data):
+    os.system("%s -new-window %s" % (WEB_BROWSER, get_apache_info(data)['server_name']))   
+
+def show_log(widget,data):
+    os.system("%s  -m -e \"tail -n 99 -f %s \" &" % (TERM,get_apache_info(data)['error_log']))
+
+def edit_vhost(widget,site):
+    os.system("gksu gedit %s &" % '/etc/apache2/sites-available/'+site)
+
+def clear_log(widget,data):
+    os.system("echo \"\" | gksu tee %s" %  get_apache_info(data)['error_log'])
+
+def enable_disable(widget,site,site_item):
+    menu_icon = site_item.get_image()
+    menu_icon.set_from_stock(gtk.STOCK_COPY, gtk.ICON_SIZE_SMALL_TOOLBAR)
+    label = widget.get_label()
+    if label == "Disable site":
+        os.system("xterm -e \"gksu a2dissite %s\" " % site)
+        menu_icon.set_from_stock(gtk.STOCK_NO, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        site_item.set_image(menu_icon)
+        widget.set_label("Enable site")
+    else:
+        os.system("xterm -e \"gksu a2ensite %s\" " % site)
+        menu_icon.set_from_stock(gtk.STOCK_YES, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        site_item.set_image(menu_icon)
+        widget.set_label("Disable site")
+    site_item.set_label(site)
+    restart_apache(None)
+
+if __name__ == "__main__":
+
+    
+    ind = appindicator.Indicator ("apache-icon", "apache-icon", appindicator.CATEGORY_APPLICATION_STATUS)
+    ind.set_status (appindicator.STATUS_ACTIVE)
+    menu = gtk.Menu()
+
+    hosts_item = gtk.MenuItem("Edit hosts")
+    hosts_item.connect("activate", edit_hosts)
+    menu.append(hosts_item)
+
+    phpini_item = gtk.MenuItem("Edit php.ini")
+    phpini_item.connect("activate", edit_phpini)
+    menu.append(phpini_item)
+
+    
+
+    restart_apache_item = gtk.MenuItem("Restart Apache")
+    restart_apache_item.connect("activate", restart_apache)
+    menu.append(restart_apache_item)
+
+    chown_item = gtk.MenuItem("Set ownership to www-data")
+    chown_item.connect("activate", chown_fix)
+    menu.append(chown_item)
+
+    separator = gtk.SeparatorMenuItem()
+    menu.append(separator) 
+
+    for site in sitesavailable:
+        site_item = gtk.ImageMenuItem(site)
+        menu_icon = gtk.Image()
+        if site in sitesenabled:
+            menu_icon.set_from_stock(gtk.STOCK_YES, gtk.ICON_SIZE_SMALL_TOOLBAR)
+            enabled = True
+        else:
+            menu_icon.set_from_stock(gtk.STOCK_NO, gtk.ICON_SIZE_SMALL_TOOLBAR)
+            enabled = False
+        site_item.set_image(menu_icon)
+        site_item.set_use_stock(False)
+        site_item.set_always_show_image(True)
+        submenu = gtk.Menu()
+
+        if enabled:
+            label = "Disable site"
+        else:
+            label = "Enable site"
+        endis_site_item = gtk.MenuItem(label)
+        endis_site_item.connect("activate",enable_disable,site,site_item)
+        submenu.append(endis_site_item)
+
+        show_log_item = gtk.MenuItem("Show error log")
+        show_log_item.connect("activate",show_log,site)
+        submenu.append(show_log_item)     
+
+        clear_log_item = gtk.MenuItem("Clear error log")
+        clear_log_item.connect("activate",clear_log,site)
+        submenu.append(clear_log_item)
+
+        website_item = gtk.MenuItem("Go to website")
+        website_item.connect("activate", browse_website,site)
+        submenu.append(website_item)
+
+        browse_files_item = gtk.MenuItem("Browse files")
+        browse_files_item.connect("activate", browse_files,site)
+        submenu.append(browse_files_item)
+
+        edit_vhost_item = gtk.MenuItem("Edit vhost config")
+        edit_vhost_item.connect("activate", edit_vhost,site)
+        submenu.append(edit_vhost_item)      
+
+        site_item.set_submenu(submenu)
+        menu.append(site_item)
+
+    quit_item = gtk.MenuItem("Quit")
+    quit_item.connect("activate", gtk.main_quit)
+
+    menu.append(quit_item)
+    ind.set_menu(menu)
+
+    menu.show_all()
+    gtk.main()
+

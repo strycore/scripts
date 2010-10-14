@@ -1,0 +1,56 @@
+#! /bin/bash
+
+function menu {
+	echo "(1) Fetch apache configurations"
+	echo "(2) Fetch fstab"
+	echo "(q) Quit"
+	read CHOICE
+case $CHOICE in
+	1)
+		APACHE_DIFF=""
+		for I in $(seq $INDEX)
+		do
+			APACHE_PATH=${DIST[`expr $I-1`]}"/etc/apache2/apache2.conf"
+			if [ -f $APACHE_PATH ]; then
+				APACHE_DIFF=$APACHE_DIFF" "$APACHE_PATH
+			fi
+		done
+		meld $APACHE_DIFF
+		menu
+		;;
+	2)
+		FSTAB_PATH=""
+		for I in $(seq $INDEX)
+		do
+			FSTAB_PATH=$FSTAB_PATH" "${DIST[`expr $I-1`]}"/etc/fstab"
+		done
+		meld $FSTAB_PATH
+		menu
+		;;
+	q)
+		exit
+		;;
+esac
+}
+function get_drives {
+	INDEX=0
+	for MNT in `mount | awk '{print $3}'`
+	do
+		if [ -d $MNT"/etc" ];
+		then
+			DIST[$INDEX]=$MNT
+			INDEX=`expr $INDEX + 1`
+		fi
+	done
+}
+function show_drives {
+	echo "Distributions found in :"
+	for I in $(seq $INDEX)
+	do
+		echo "    - "${DIST[`expr $I-1`]}
+	done
+}
+get_drives
+show_drives
+menu
+

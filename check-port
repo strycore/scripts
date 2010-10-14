@@ -1,0 +1,3 @@
+#!/bin/bash
+
+nmap -p $1  localhost 2>/dev/null | grep ^[0-9] | awk '{print $2}'

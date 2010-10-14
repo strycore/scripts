@@ -1,0 +1,15 @@
+#!/bin/bash
+
+RELEASE=`lsb_release -c -s`
+SOURCE_CACHE="/media/sourcecode/source/ubuntu/$RELEASE"
+
+if [ ! $1 ] ; then
+    echo "Please provide package name"
+    exit 2
+fi
+
+mkdir -p $SOURCE_CACHE
+cd $SOURCE_CACHE
+mkdir $1
+cd $1
+apt-get source $1

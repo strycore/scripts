@@ -1,0 +1,104 @@
+#/bin/bash
+
+set -e
+
+SERVER_NAME='a2v.a2v'
+
+COMPANY_NAME=$SERVER_NAME
+ORGANISATION='A2V Multimedia'
+COUNTRY='FR'
+STATE="Aquitaine"
+CITY="Bordeaux"
+
+
+apt-get install postfix
+
+mkdir -p $HOME/Maildir
+
+postconf -e 'home_mailbox = Maildir/'
+postconf -e 'smtpd_sasl_local_domain ='
+postconf -e 'smtpd_sasl_auth_enable = yes'
+postconf -e 'smtpd_sasl_security_options = noanonymous'
+postconf -e 'broken_sasl_auth_clients = yes'
+postconf -e 'smtpd_sender_restrictions = permit_sasl_authenticated,permit_mynetworks,reject_unauth_destination'
+postconf -e 'smtpd_recipient_restrictions = permit_sasl_authenticated,permit_mynetworks,reject_unauth_destination'
+postconf -e 'inet_interfaces = all'
+postconf -e 'inet_protocols = ipv4'
+
+SMTPD_CONF="/etc/postfix/sasl/smtpd.conf"
+touch $SMTPD_CONF
+echo "pwcheck_method: saslauthd" > $SMTPD_CONF
+echo "mech_list: plain login" >> $SMTPD_CONF
+
+cd /tmp
+
+touch smtpd.key
+chmod 600 smtpd.key
+openssl genrsa 1024 > smtpd.key
+openssl req -new -key smtpd.key -subj '/CN=www.a2v.eu/O=A2V/C=FR/ST=Aquitaine/L=Bordeaux/CN=Mathieu Comandon' -x509 -days 3650 -out smtpd.crt
+openssl req -new -x509 -extensions v3_ca -keyout cakey.pem -out cacert.pem -subj '/CN=www.a2v.eu/O=A2V/C=FR/ST=Aquitaine/L=Bordeaux/CN=Mathieu Comandon' -days 3650
+mv smtpd.key /etc/ssl/private/
+mv smtpd.crt /etc/ssl/certs/
+mv cakey.pem /etc/ssl/private/
+mv cacert.pem /etc/ssl/certs/
+
+postconf -e 'smtp_tls_security_level = may'
+postconf -e 'smtpd_tls_security_level = may'
+postconf -e 'smtpd_tls_auth_only = no'
+postconf -e 'smtp_tls_note_starttls_offer = yes'
+postconf -e 'smtpd_tls_key_file = /etc/ssl/private/smtpd.key'
+postconf -e 'smtpd_tls_cert_file = /etc/ssl/certs/smtpd.crt'
+postconf -e 'smtpd_tls_CAfile = /etc/ssl/certs/cacert.pem'
+postconf -e 'smtpd_tls_loglevel = 1'
+postconf -e 'smtpd_tls_received_header = yes'
+postconf -e 'smtpd_tls_session_cache_timeout = 3600s'
+postconf -e 'tls_random_source = dev:/dev/urandom'
+postconf -e "myhostname = $SERVER_NAME"
+
+/etc/init.d/postfix restart
+
+apt-get install libsasl2-2 sasl2-bin
+
+cp /etc/default/saslauthd /tmp
+
+sed -i 's/START=no/START=yes/' /etc/default/saslauthd
+sed -i 's|-c -m /var/run/saslauthd|-c -r -m /var/spool/postfix/var/run/saslauthd|' /etc/default/saslauthd
+if [ $(grep PIDFILE /etc/default/saslauthd | wc -l) = 0 ] ; then
+sed -i '
+/START=yes/ a\
+\
+PWDIR="/var/spool/postfix/var/run/saslauthd"\
+PARAMS="-m ${PWDIR}"\
+PIDFILE="${PWDIR}/saslauthd.pid"\
+' /etc/default/saslauthd
+fi
+
+
+dpkg-statoverride --force --update --add root sasl 755 /var/spool/postfix/var/run/saslauthd
+/etc/init.d/saslauthd start
+
+USER_HASH=$(echo $SMTP_USER | base64)
+PASSWORD_HASH=$(echo $SMTP_PASSWORD | base64)
+
+echo << EOF
+Opening telnet connection for testing postfix
+The expected result is :
+250-STARTTLS
+250-AUTH LOGIN PLAIN
+250-AUTH=LOGIN PLAIN
+
+Type in :
+ehlo localhost
+auth login
+$USER_HASH
+$PASSWORD_HASH
+mail from: $EMAIL
+rcpt to: $EMAIL
+data
+My message here
+.
+quit
+EOF
+
+echo 'now type: ehlo localhost'
+telnet localhost 25

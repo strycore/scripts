@@ -1,0 +1,16 @@
+#!/bin/bash
+# lsa : list your apache virtual hosts
+# with the local path and the URL
+# version 0.1 (2010/03/10)
+# (c) 2010 Mathieu Comandon 
+# Licensed under the terms of the GPL Version 3
+#
+# Usage:
+# lsa
+
+apache_dir="/etc/apache2/sites-enabled/"
+for file in $(ls $apache_dir); do
+    srvname=$(grep ServerName $apache_dir$file | sed 's|ServerName\s*|http://|') 
+    root=$(grep DocumentRoot $apache_dir$file | sed 's|DocumentRoot\s*||') 
+    echo $file : $srvname " stored in " $root
+done

@@ -1,0 +1,61 @@
+#!/bin/bash
+
+
+#sudo apt-get install dh-make devscripts cdbs build-essential fakeroot
+
+PKGNAME="synologyredirector"
+VER="0.2"
+SOURCE_DIR="/home/strider/dev/redirector/"
+PKG_DIR="/home/strider/dev/packaging/"$PKGNAME"-"$VER
+SECTION="x11"
+PRIORITY="optional"
+PROJECTURL="https://launchpad.net/synologyredirector"
+PROJECTDESC="Synology Download Redirector for Linux"
+PROJECTLONGDESC=" This is the Linux port of the tool made by Synology to redirect \
+bittorrents to the NAS download client.\
+\n It allows you to drag torrent files and links to a drop box and monitor your \
+downloads."
+DEPENDS="python2.6, python-gtk2, python-glade2"
+export DEBFULLNAME="Mathieu Comandon"
+export DEBEMAIL="strycore@gmail.com"
+rm -rf $PKG_DIR
+mkdir -p $PKG_DIR
+cd $PKG_DIR
+
+cp $SOURCE_DIR/* $PKG_DIR -R
+rm src/*.pyc
+tar cvzf ../${PKGNAME}"_"${VER}.orig.tar.gz ../${PKGNAME}-${VER}/
+dh_make -c gpl -s -b
+
+cd debian
+rm *ex *EX README.Debian dirs
+
+#control file
+sed -i -e 's|Homepage: .*|Homepage: '$PROJECTURL'|' control
+sed -i -e 's|Architecture: .*|Architecture: all\nXB-Python-Version: ${python:Versions}|' control
+sed -i -e 's|Section: .*|Section: '$SECTION'|' control
+sed -i -e 's|Priority: .*|Priority: '$PRIORITY'|' control
+sed -i -e 's|Description: .*|Description: '"$PROJECTDESC"'|' control 
+sed -i -e 's| <insert long desc.*|'"$PROJECTLONGDESC"'|' control
+sed -i -e 's|Depends: ${shlibs:Depends}, ${misc:Depends}|Depends: ${python:Depends}, '"$DEPENDS"', ${misc:Depends}|' control
+sed -i -e 's|Build-Depends: .*|&, python-central (>=0.6.0)|' control
+sed -i -e "/Standards-Version:/ a\
+XS-Python-Version: >=2.6" control
+
+#rules file
+sed -i -e "/make -f/ a\
+DEB_PYTHON_SYSTEM=pycentral" rules
+
+sed -i -e 's|include /usr/share/cdbs/1/class/makefile.mk|include /usr/share/cdbs/1/class/python-distutils.mk|' rules
+
+#copyright
+#TODO : put the copyright stuff here
+
+#Changelog
+sed -i -e "s/unstable/jaunty/" changelog
+sed -i -e "s|\(Initial release\).*|\1|" changelog
+
+cd ..
+debuild -S -sa
+#debuild -us -uc
+
