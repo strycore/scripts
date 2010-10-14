@@ -1,0 +1,14 @@
+Strycore's script collection
+----------------------------
+
+Author: Mathieu Comandon
+
+This is a collection of shell scripts I've written and that are (or were) useful
+at some point. Most of these scripts are written in Bash  and a few are in 
+Python. All of them are under a GPL v3 license, unless specified otherwise.
+
+Some of the scripts are written in a quick and dirty way because I needed them 
+quickly on rare occasions. Others like the mysql-* series are cleaner and try to
+follow scripting best practices.
+
+Comments, critisism and patches are welcome !
