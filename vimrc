@@ -10,6 +10,7 @@
 "
 " Plugins
 " -------
+" For automatic plugin installation, see the vim-setup script
 "
 " NERDTree
 " taglist
@@ -27,10 +28,10 @@
 " F6: Next buffer
 " F7: Toggle paste mode
 " F8: Toggle between action and template in symfony
-" F9:
-" F10:
-" F11: Not used (Reserved for fullscreen switching by WM or Terminal emulator)
-" F12:
+" F9: Available
+" F10: Available
+" F11: Reserved for fullscreen switching by WM or Terminal emulator
+" F12: Available
 
 " Other shortcuts:
 "
@@ -73,7 +74,6 @@ set history=1000
 set undolevels=1000
 set wildignore=*.swp,*.bak,*.pyc,*.class
 set title
-set visualbell
 set noerrorbells
 set nobackup
 set noswapfile
@@ -168,6 +168,11 @@ inoremap <Nul> <C-x><C-o>
 
 cmap w!! w !sudo tee % > /dev/null
 
+"MiniBufExplorer configuration
+let g:miniBufExplMapWindowNavVim = 1
+let g:miniBufExplMapWindowNavArrows = 1
+let g:miniBufExplMapCTabSwitchBufs = 1
+let g:miniBufExplModSelTarget = 1
 "TagList configuration
 map <silent> <F4> :TlistToggle<CR>
 let Tlist_Exit_OnlyWindow = 1

@@ -24,6 +24,9 @@ if [ ! -f ./plugin/NERD_tree.vim ] ; then
     rm NERD_tree.zip
 fi
 
+if [ ! -f ./plugin/minibufexpl.vim ] ; then
+    wget http://www.vim.org/scripts/download_script.php?src_id=3640 -O ./plugin/minibufexpl.vim
+fi
 
 if [ ! -f ./plugin/taglist.vim ] ; then
     wget "http://vim.sourceforge.net/scripts/download_script.php?src_id=7701" -O taglist_45.zip
