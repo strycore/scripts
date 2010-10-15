@@ -6,6 +6,8 @@
 " http://nvie.com/posts/how-i-boosted-my-vim/
 " http://github.com/nvie/vimrc/blob/master/vimrc
 "
+" Hacking Vim – The Ultimate Vimrc
+" http://www.jonlee.ca/hacking-vim-the-ultimate-vimrc/
 "
 "
 " Plugins
@@ -28,7 +30,7 @@
 " F6: Next buffer
 " F7: Toggle paste mode
 " F8: Toggle between action and template in symfony
-" F9: Available
+" F9: Reindent whole file
 " F10: Available
 " F11: Reserved for fullscreen switching by WM or Terminal emulator
 " F12: Available
@@ -46,14 +48,13 @@ set showmode
 set showmatch
 syntax on
 
-set autoindent
 set smartindent
-
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set shiftround
 set expandtab
+filetype indent on
 
 set backspace=indent,eol,start
 set copyindent
@@ -68,6 +69,7 @@ nmap <silent> ,/ :nohlsearch<CR>
 set incsearch
 
 set foldenable
+set fdm=indent
 set nowrap
 set gdefault
 set history=1000
@@ -78,8 +80,12 @@ set noerrorbells
 set nobackup
 set noswapfile
 set lazyredraw
-set statusline=%<%f\ (%{&encoding})\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+
+"Informative status line
+"set statusline=%<%f\ (%{&encoding})\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+set statusline=%F%m%r%h%w\ [TYPE=%Y\ %{&ff}]\ [%l/%L\ (%p%%)]
 set laststatus=2          " always show status line
+
 set viminfo='1000,f1,:1000,/1000  " big viminfo :)
 
 set mouse=a
@@ -144,8 +150,9 @@ set listchars=tab:▸\ ,trail:.,extends:#,nbsp:.,eol:¬
 autocmd BufRead * silent! %s/[\r \t]\+$//
 autocmd BufEnter *.php :%s/[ \t\r]\+$//e
 
-"let php_folding = 2
-
+"Shortcut to auto indent entire file
+nmap <F9> 1G=G
+imap <F9> <ESC>1G=Ga
 
 "Invisible character colors
 highlight NonText ctermfg=DarkGray
