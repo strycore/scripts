@@ -1,5 +1,20 @@
 "
+" Mathieu Comandon's vimrc
 "
+" This file is under a WTFPL License : 
+" http://sam.zoy.org/wtfpl/ 
+"
+" You can get the latest version of this file at:
+" http://github.com/strycore/scripts/blob/master/vimrc
+"  
+" One day this vimrc file will be the best vimrc EVAR!
+" Right now it just needs a lot of work done.
+"
+" This vimrc is optimised for :
+" - PHP and symfony
+" - Javascript, CSS, HTML
+" - Python
+" - Bash
 "
 " Inspirations:
 " How I boosted my Vim (nvie)
@@ -8,7 +23,6 @@
 "
 " Hacking Vim – The Ultimate Vimrc
 " http://www.jonlee.ca/hacking-vim-the-ultimate-vimrc/
-"
 "
 " Plugins
 " -------
@@ -19,7 +33,6 @@
 " command-t: https://wincent.com/products/command-t
 " ack-grep
 "
-
 
 " Function keys:
 " F1: Help
@@ -46,21 +59,32 @@ set nocompatible
 set showcmd
 set showmode
 set showmatch
+set statusline=%F%m%r%h%w\ [TYPE=%Y\ %{&ff}]\ [%l/%L\ (%p%%)]
+set laststatus=2          " always show status line
+set viminfo='1000,f1,:1000,/1000  " big viminfo :)
+set mouse=a
 syntax on
 
+" Color scheme
+" available schemes : desert256, railscasts
+set t_Co=256
+colorscheme railscasts
+
+" Identation and tabs
 set smartindent
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set shiftround
 set expandtab
-filetype indent on
-
-set backspace=indent,eol,start
 set copyindent
+set backspace=indent,eol,start
+
 set linespace=4
 set ruler
-set hidden     "dont't whine when trying to move away from an unsave buffer
+set hidden     "don't whine when trying to move away from an unsaved buffer
+
+" Searching 
 set ignorecase "ignore case when searching
 set smartcase  " ignore case if search pattern is all lowercase,
                " case-sensitive otherwise
@@ -77,36 +101,28 @@ set undolevels=1000
 set wildignore=*.swp,*.bak,*.pyc,*.class
 set title
 set noerrorbells
-set nobackup
-set noswapfile
+set nobackup    " Backup files are sooo 90's
+set noswapfile  " Swap files are very annoying
 set lazyredraw
 
-"Informative status line
-"set statusline=%<%f\ (%{&encoding})\ %h%m%r%=%-14.(%l,%c%V%)\ %P
-set statusline=%F%m%r%h%w\ [TYPE=%Y\ %{&ff}]\ [%l/%L\ (%p%%)]
-set laststatus=2          " always show status line
-
-set viminfo='1000,f1,:1000,/1000  " big viminfo :)
-
-set mouse=a
 set cursorline
 set number
 set encoding=utf8
 set foldmethod=syntax
-set t_Co=256
-"colorscheme desert256
-colorscheme railscasts
+
 let mapleader=","
 let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 let g:showmarks_enable = 1
 
-" Quickly edit/reload the vimrcfile
-nmap <silent> <leader>ev :e $MYVIMRC<CR>
-nmap <silent> <leader>sv :so $MYVIMRC<CR>
-
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-
-match OverLength /\%81v.\+/
+" Highlight long lines
+" TODO Hightlight only the 80th character, having the whole end of line in red
+"      is ugly and confusing
+if has('colorcolumn')
+	set colorcolumn=+80
+else
+    highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+    match OverLength /\%81v.\+/
+endif
 
 filetype on
 filetype plugin on
@@ -125,43 +141,29 @@ if has('autocmd')
 
     autocmd BufNewFile,BufRead *.rss setfiletype xml
     autocmd BufNewFile,BufRead *.less setfiletype css
-    "Open NERDTree when Vim starts
-    "Commented out until a solution is found to close NERDTree
-    "when it's the only opened buffer.
-    "autocmd VimEnter * NERDTree
-    "autocmd VimEnter * wincmd p
 
     " run file with PHP CLI (CTRL-M)
     autocmd FileType php noremap <C-M> :w!<CR>:!php %<CR>
 
     " PHP parser check (CTRL-L)
     autocmd FileType php noremap <C-L> :!php -l %<CR>
-
-
     autocmd FileType php noremap <C-P> :!phpcs %<CR>
 endif
 if has("gui_running")
     highlight SpellBad term=underline gui=undercurl guisp=Orange
 endif
-" note: leader is backslash
-nmap <leader>l :set list!<CR>
-set listchars=tab:▸\ ,trail:.,extends:#,nbsp:.,eol:¬
 
+" Invisible characters
+set listchars=tab:▸\ ,trail:.,extends:#,nbsp:.,eol:¬
+nmap <leader>l :set list!<CR> 
+
+" I think this part remove useless trailing spaces
 autocmd BufRead * silent! %s/[\r \t]\+$//
 autocmd BufEnter *.php :%s/[ \t\r]\+$//e
 
 "Shortcut to auto indent entire file
 nmap <F9> 1G=G
 imap <F9> <ESC>1G=Ga
-
-"Invisible character colors
-highlight NonText ctermfg=DarkGray
-highlight SpecialKey ctermfg=DarkGrey
-
-"Map C-s to save
-noremap <C-s> :update<CR>
-inoremap <C-s> <C-o>:update<CR>
-vnoremap <C-s> <C-c>:update<CR>
 
 map <silent><A-Right> :tabnext<CR>
 map <silent><A-Left> :tabprevious<CR>
@@ -171,41 +173,52 @@ noremap <silent><C-Right> <C-]>
 noremap <C-S-PageUp> gt
 noremap <C-S-pageDown> gT
 
+" Remap autocompletion to Ctrl-Space
 inoremap <Nul> <C-x><C-o>
 
-cmap w!! w !sudo tee % > /dev/null
-
-"MiniBufExplorer configuration
+" MiniBufExplorer configuration
 let g:miniBufExplMapWindowNavVim = 1
 let g:miniBufExplMapWindowNavArrows = 1
 let g:miniBufExplMapCTabSwitchBufs = 1
 let g:miniBufExplModSelTarget = 1
-"TagList configuration
+
+" TagList configuration
 map <silent> <F4> :TlistToggle<CR>
 let Tlist_Exit_OnlyWindow = 1
-let Tlist_Use_Right_Window = 1 " split to the right side of the screen
-let Tlist_Sort_Type = "order" " sort by order or name
-let Tlist_Compart_Format = 1 " Remove extra information and blank lines from the taglist window.
-let Tlist_GainFocus_On_ToggleOpen =  0" Jump to taglist window on open.
+let Tlist_Use_Right_Window = 1  " split to the right side of the screen
+let Tlist_Sort_Type = "order"   " sort by order or name
+let Tlist_Compart_Format = 1    " Remove extra information and blank lines.
 let Tlist_Display_Tag_Scope = 1 " Show tag scope next to the tag name.
+let Tlist_GainFocus_On_ToggleOpen =  0 " Jump to taglist window on open.
 let Tlist_WinWidth = 40
 
 set tags=.vimtags
 set tags+=$HOME/.vim/tags/python.ctags
 set tags+=$HOME/.vim/tags/django.ctags
 
-"Toggle NerdTree
+" json formating
+map <leader>jt  <Esc>:%!json_xs -f json -t json-pretty<CR>
+
+" Toggle NerdTree
 map <silent> <F3> :NERDTreeToggle<CR>
 map <silent> <F2> :bd<CR>:vsp<CR>
-"Move between buffers
+
+" Move between buffers
 map <silent> <F6> :bnext<CR>
 map <silent> <F5> :bprevious<CR>
+
+" Toggle paste mode
 set pastetoggle=<F7>
+
 "symfony plugin configuration
 map <silent> <F8> :SfSwitchView<CR>
 
 "Refactor variable names
 nnoremap <C-r> gd[{V%:s/<C-R>///gc<left><left><left>
+
+" Save file with sudo
+cmap w!! w !sudo tee % > /dev/null
+
 set path=$PWD/**
 
 python << EOF
