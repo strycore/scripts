@@ -104,9 +104,9 @@ let g:showmarks_enable = 1
 nmap <silent> <leader>ev :e $MYVIMRC<CR>
 nmap <silent> <leader>sv :so $MYVIMRC<CR>
 
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+" highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 
-match OverLength /\%81v.\+/
+" match OverLength /\%81v.\+/
 
 filetype on
 filetype plugin on
