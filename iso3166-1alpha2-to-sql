@@ -1,0 +1,38 @@
+#!/bin/bash
+# Convert a list of country codes 
+# in ISO3166-1 alpha 2 format to a SQL script.
+#
+# 2010, Mathieu Comandon <strider@strycore.com>
+#
+# This file is under a WTFPL Licence
+#
+
+
+
+# The country code list is located at : 
+# http://www.iso.org/iso/iso3166_en_code_lists.txt
+
+# For more information about ISO 3166-1 visit Wikipedia :
+# http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+
+set -e
+
+text_file=$1
+table='country_code'
+IFS=$(echo -en "\n\b")
+dest="$HOME/isocodes.sql"
+rm $dest
+for line in $(cat "$text_file") ; do
+    len=${#line}
+    if [ $len -lt 200 -a $len -gt 4 ] ; then
+        new_line=$(echo $line | iconv -f iso-8859-1 -t utf-8 -)
+        country=${new_line%;*}
+        country=$(echo $country | sed -e "s/'/\\\\'/")
+        code=${new_line#*;}
+        code=$(echo -n $code | tr -d '\r')
+
+        echo  "INSERT INTO ${table} (country, code) VALUES (\"${country}\", \"${code}\");" >> $dest
+    fi
+done
+
+unset IFS
