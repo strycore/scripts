@@ -1,6 +1,8 @@
 #!/bin/bash
 
-wget http://www.djangoproject.com/download/1.2.1/tarball/ -O Django-1.2.1.tar.gz
-tar xzvf Django-1.2.1.tar.gz
-cd Django-1.2.1
+VERSION="1.2.3"
+
+wget http://www.djangoproject.com/download/$VERSION/tarball/ -O Django-$VERSION.tar.gz
+tar xzvf Django-$VERSION.tar.gz
+cd Django-$VERSION
 sudo python setup.py install
