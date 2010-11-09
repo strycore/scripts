@@ -4,7 +4,7 @@ MOUNT=$(which mount.cifs)
 DESTDIR="$HOME/Partages/"
 SMB_HOST="192.168.33.11"
 SMB_USER="admin"
-SMB_PASSWD="admin"
+SMB_PASSWD=""
 SHARES=('qweb' 'public')
 echo "checking smbfs"
 if [ ! $MOUNT ] ; then

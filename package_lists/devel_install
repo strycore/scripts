@@ -1,3 +1,4 @@
+vim
 quickly
 devscripts
 python-yaml
@@ -17,3 +18,4 @@ bzr-email
 bzr-git
 bzr-hg
 bzr-explorer
+csstidy

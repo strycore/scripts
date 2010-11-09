@@ -3,14 +3,14 @@
 set -e
 
 
-SYMFONY_VERSION='1.4.6'
+SYMFONY_VERSION='1.4.8'
 SYMFONY_TGZ_CHECKSUM='0d17b1ef8b9e02d196fdb528c443ccd8'
 SYMFONY_FILENAME="symfony-$SYMFONY_VERSION.tgz"
 SYMFONY_CURRENT_URL="http://www.symfony-project.org/get/$SYMFONY_FILENAME"
-SQL_PASSWORD=baxterantispam
+SQL_PASSWORD=boesneradmin
 SQL_ROOT_PASSWORD='admin'
 HOSTNAME=`hostname`
-EMAIL='strycore@gmail.com'
+EMAIL='mathieu@a2v.eu'
 ENABLE_SFGUARD_PLUGIN=true
 
 BASEDIR=`pwd`
@@ -66,7 +66,7 @@ cat > $PROJECT.vhost << EOF
 		allow from all
 	</Directory>
 	Alias /sf $PROJECT_DIR/lib/symfony/data/web/sf
-	<Directory "$PROJECT_DIR/lib/symfony/data/web/sf">	
+	<Directory "$PROJECT_DIR/lib/symfony/data/web/sf">
 	    AllowOverride All
 	    Allow from All
 	</Directory>
@@ -94,15 +94,21 @@ cd ..
 
 if [ $ENABLE_SFGUARD_PLUGIN ]
   then
-    echo "Installing sfGuard" 
+    echo "Installing sfGuard"
     ./symfony plugin:install sfDoctrineGuardPlugin
     ./symfony doctrine:build-model
     ./symfony doctrine:build-sql
     ./symfony doctrine:insert-sql
 fi
 
+chmod -R 777 log
+chmod -R 777 cache
+
 echo "Init bzr"
 bzr init
+bzr ignore log/*
+bzr ignore cache/*
+bzr ignore lib/symfony/*
 bzr add *
 bzr commit -m "First commit"
 

@@ -1,12 +1,12 @@
 "
 " Mathieu Comandon's vimrc
 "
-" This file is under a WTFPL License : 
-" http://sam.zoy.org/wtfpl/ 
+" This file is under a WTFPL License :
+" http://sam.zoy.org/wtfpl/
 "
 " You can get the latest version of this file at:
 " http://github.com/strycore/scripts/blob/master/vimrc
-"  
+"
 " One day this vimrc file will be the best vimrc EVAR!
 " Right now it just needs a lot of work done.
 "
@@ -84,7 +84,7 @@ set linespace=4
 set ruler
 set hidden     "don't whine when trying to move away from an unsaved buffer
 
-" Searching 
+" Searching
 set ignorecase "ignore case when searching
 set smartcase  " ignore case if search pattern is all lowercase,
                " case-sensitive otherwise
@@ -92,7 +92,7 @@ set hlsearch   " highlight search terms
 nmap <silent> ,/ :nohlsearch<CR>
 set incsearch
 
-set foldenable
+" set foldenable
 set fdm=indent
 set nowrap
 set gdefault
@@ -108,7 +108,7 @@ set lazyredraw
 set cursorline
 set number
 set encoding=utf8
-set foldmethod=syntax
+set foldmethod=manual
 
 let mapleader=","
 let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -137,6 +137,7 @@ if has('autocmd')
     autocmd FileType css set omnifunc=csscomplete#CompleteCSS
     autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
     autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+    autocmd FileType php set ft=php.html
     autocmd FileType c set omnifunc=ccomplete#Complete
 
     autocmd BufNewFile,BufRead *.rss setfiletype xml
@@ -155,7 +156,7 @@ endif
 
 " Invisible characters
 set listchars=tab:▸\ ,trail:.,extends:#,nbsp:.,eol:¬
-nmap <leader>l :set list!<CR> 
+nmap <leader>l :set list!<CR>
 
 " I think this part remove useless trailing spaces
 autocmd BufRead * silent! %s/[\r \t]\+$//
@@ -195,6 +196,9 @@ let Tlist_WinWidth = 40
 set tags=.vimtags
 set tags+=$HOME/.vim/tags/python.ctags
 set tags+=$HOME/.vim/tags/django.ctags
+
+" SnipMate config
+let g:snips_author = 'Mathieu Comandon'
 
 " json formating
 map <leader>jt  <Esc>:%!json_xs -f json -t json-pretty<CR>

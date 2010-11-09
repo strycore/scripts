@@ -60,3 +60,15 @@ fi
 if [ ! -f ./plugin/zencoding.vim ] ; then
     wget "http://www.vim.org/scripts/download_script.php?src_id=13765" -O ./plugin/zencoding.vim
 fi
+
+if [ ! -f ./plugin/snipMate.vim ] ; then
+    wget "http://www.vim.org/scripts/download_script.php?src_id=11006" -O ./snipMate.zip
+    unzip ./snipMate.zip
+    rm ./snipMate.zip
+fi
+
+if [ ! -f ./plugin/surround.vim ] ; then
+    wget "http://www.vim.org/scripts/download_script.php?src_id=12566" -O ./surround.zip
+    unzip ./surround.zip
+    rm ./surround.zip
+fi

@@ -20,8 +20,8 @@ set -e
 text_file=$1
 table='country_code'
 IFS=$(echo -en "\n\b")
-dest="$HOME/isocodes.sql"
-rm $dest
+dest="$HOME/isocodes.yml"
+echo "CountryCode:" > $dest
 for line in $(cat "$text_file") ; do
     len=${#line}
     if [ $len -lt 200 -a $len -gt 4 ] ; then
@@ -31,7 +31,9 @@ for line in $(cat "$text_file") ; do
         code=${new_line#*;}
         code=$(echo -n $code | tr -d '\r')
 
-        echo  "INSERT INTO ${table} (country, code) VALUES (\"${country}\", \"${code}\");" >> $dest
+        echo "  ${code}:" >> $dest
+        echo "    country: ${country}" >> $dest
+        echo "    code: ${code}" >> $dest
     fi
 done
 

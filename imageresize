@@ -3,7 +3,7 @@
 # imagecrop : Resize and crop image to specified size
 #
 # Version 0.2 (2010/07/21)
-# (c) 2010 Mathieu Comandon 
+# (c) 2010 Mathieu Comandon
 # Licensed under the terms of the GPL Version 3
 #
 set -e
@@ -18,14 +18,14 @@ fi
 usage()
 {
 cat << EOF
-Usage: $0 
+Usage: $0
 Resize an image to a given maximum size
 
 OPTIONS:
   -d, --dir=PATH	Input directory containing the images to convert
   -s, --size=SIZE	Maximum size of the output image
   -r, --keep-ratio	Keep ratio, do not make a square image
-  -v, --verbose		Verbose mode				
+  -v, --verbose		Verbose mode
   -h, --help		Prints this message
 EOF
 }
@@ -36,7 +36,7 @@ if [ "$#" -eq 0 ] ; then
     exit 2
 fi
 
-PARAMS=`getopt -n $0 -o d:s:rvh --long dir:,size:,keep-ratio,,verbose,help -- "$@"`
+PARAMS=`getopt -n $0 -o d:s:rvh --long dir:,size:,keep-ratio,verbose,help -- "$@"`
 eval set -- "$PARAMS"
 while true ; do
     case "$1" in
