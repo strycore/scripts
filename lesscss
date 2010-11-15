@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd web/css
+lessc -w main.less

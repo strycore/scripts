@@ -54,6 +54,8 @@
 " ,l Toggle invisible characters
 " ,t open command-t filesearch
 " :w!! save file with sudo
+" "+y  copy to system clipboard
+" <Shift>Ins paste from system clipboard
 "
 set nocompatible
 set showcmd
@@ -124,11 +126,10 @@ else
     match OverLength /\%81v.\+/
 endif
 
-filetype on
 filetype plugin on
 filetype indent on
 if has('autocmd')
-    autocmd filetype python set expandtab
+    autocmd FileType python set expandtab
     autocmd FileType make setlocal ts=8 sts=8 sw=8 noexpandtab
     autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
     autocmd FileType python set omnifunc=pythoncomplete#Complete
@@ -149,6 +150,10 @@ if has('autocmd')
     " PHP parser check (CTRL-L)
     autocmd FileType php noremap <C-L> :!php -l %<CR>
     autocmd FileType php noremap <C-P> :!phpcs %<CR>
+    autocmd BufRead *.vala set efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
+    autocmd BufRead *.vapi set efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
+    au BufRead,BufNewFile *.vala            setfiletype vala
+    au BufRead,BufNewFile *.vapi            setfiletype vala
 endif
 if has("gui_running")
     highlight SpellBad term=underline gui=undercurl guisp=Orange
@@ -162,14 +167,10 @@ nmap <leader>l :set list!<CR>
 autocmd BufRead * silent! %s/[\r \t]\+$//
 autocmd BufEnter *.php :%s/[ \t\r]\+$//e
 
-"Shortcut to auto indent entire file
-nmap <F9> 1G=G
-imap <F9> <ESC>1G=Ga
-
-map <silent><A-Right> :tabnext<CR>
-map <silent><A-Left> :tabprevious<CR>
-noremap <silent><C-Left> <C-T>
-noremap <silent><C-Right> <C-]>
+map <silent> <A-Right> :tabnext<CR>
+map <silent> <A-Left> :tabprevious<CR>
+noremap <silent> <C-Left> <C-T>
+noremap <silent> <C-Right> <C-]>
 
 noremap <C-S-PageUp> gt
 noremap <C-S-pageDown> gT
@@ -204,18 +205,22 @@ let g:snips_author = 'Mathieu Comandon'
 map <leader>jt  <Esc>:%!json_xs -f json -t json-pretty<CR>
 
 " Toggle NerdTree
-map <silent> <F3> :NERDTreeToggle<CR>
 map <silent> <F2> :bd<CR>:vsp<CR>
+map <silent> <F3> :NERDTreeToggle<CR>
 
 " Move between buffers
-map <silent> <F6> :bnext<CR>
 map <silent> <F5> :bprevious<CR>
+map <silent> <F6> :bnext<CR>
 
 " Toggle paste mode
 set pastetoggle=<F7>
 
 "symfony plugin configuration
 map <silent> <F8> :SfSwitchView<CR>
+
+"Shortcut to auto indent entire file
+nmap <F9> 1G=G
+imap <F9> <ESC>1G=Ga
 
 "Refactor variable names
 nnoremap <C-r> gd[{V%:s/<C-R>///gc<left><left><left>

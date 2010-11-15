@@ -72,3 +72,7 @@ if [ ! -f ./plugin/surround.vim ] ; then
     unzip ./surround.zip
     rm ./surround.zip
 fi
+
+if [ ! -f ./syntax/vala.vim ] ; then
+    wget "http://live.gnome.org/Vala/Vim?action=AttachFile&do=get&target=vala.vim"  -O ./syntax/vala.vim
+fi
