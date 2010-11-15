@@ -2,15 +2,6 @@
 
 set -e
 
-#Usage :
-# $1 : plugin name
-# $2 : download url
-function download()
-{
-    if [ ! -f "$1" ] ; then
-        wget $2 -O $1
-    fi
-}
 cp $HOME/bin/vimrc $HOME/.vimrc
 
 mkdir -p $HOME/.vim/plugin
@@ -75,4 +66,8 @@ fi
 
 if [ ! -f ./syntax/vala.vim ] ; then
     wget "http://live.gnome.org/Vala/Vim?action=AttachFile&do=get&target=vala.vim"  -O ./syntax/vala.vim
+fi
+
+if [! -f $(which php_beautifier) ] ; then
+    sudo pear install PHP_Beautifier-0.1.15
 fi

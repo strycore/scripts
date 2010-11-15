@@ -33,6 +33,20 @@
 " command-t: https://wincent.com/products/command-t
 " ack-grep
 "
+"
+" Extarnal programs
+" -----------------
+"
+"  These are needed by this vim config
+"
+"  tidy : apt-get install tidy
+"  ctags : apt-get install ctags
+"  json_xs : http://search.cpan.org/dist/JSON-XS/
+"
+"  may include in the near future:
+"
+"  PHP_Beautifier : pear install PHP_Beautifier-0.1.15
+"
 
 " Function keys:
 " F1: Help
@@ -129,16 +143,26 @@ endif
 filetype plugin on
 filetype indent on
 if has('autocmd')
-    autocmd FileType python set expandtab
     autocmd FileType make setlocal ts=8 sts=8 sw=8 noexpandtab
     autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+
     autocmd FileType python set omnifunc=pythoncomplete#Complete
+    autocmd FileType python set expandtab
+
     autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+
     autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+    autocmd FileType html set equalprg=tidy\ -i \ -q
+
     autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+    autocmd FileType css set equalprg=csstidy
+
     autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+
     autocmd FileType php set omnifunc=phpcomplete#CompletePHP
     autocmd FileType php set ft=php.html
+    autocmd FileTYpe php set equalprg=php_beautifier\ -s2
+
     autocmd FileType c set omnifunc=ccomplete#Complete
 
     autocmd BufNewFile,BufRead *.rss setfiletype xml
@@ -150,10 +174,11 @@ if has('autocmd')
     " PHP parser check (CTRL-L)
     autocmd FileType php noremap <C-L> :!php -l %<CR>
     autocmd FileType php noremap <C-P> :!phpcs %<CR>
+
     autocmd BufRead *.vala set efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
     autocmd BufRead *.vapi set efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
-    au BufRead,BufNewFile *.vala            setfiletype vala
-    au BufRead,BufNewFile *.vapi            setfiletype vala
+    autocmd BufRead,BufNewFile *.vala setfiletype vala
+    autocmd BufRead,BufNewFile *.vapi setfiletype vala
 endif
 if has("gui_running")
     highlight SpellBad term=underline gui=undercurl guisp=Orange
@@ -227,6 +252,19 @@ nnoremap <C-r> gd[{V%:s/<C-R>///gc<left><left><left>
 
 " Save file with sudo
 cmap w!! w !sudo tee % > /dev/null
+
+nmap SQ <ESC>:NERDTreeClose<CR>:mksession! ~/.vim/session.vim<CR>:wqa<CR>
+
+
+function! RestoreSession()
+
+    if argc() == 0
+    	execute 'source ~/.vim/session.vim'
+    end
+
+endfunction
+
+autocmd VimEnter * call RestoreSession()
 
 set path=$PWD/**
 
