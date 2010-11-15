@@ -1,7 +1,7 @@
 #!/usr/bin/python
-# ah - apache helper aka AH-64 
+# ah - apache helper aka AH-64
 #
-# (c) 2010, Mathieu Comandon <strycore@gmail.com>
+# (c) 2010, Mathieu Comandon <strider@strycore.com>
 # License : GPL-3
 # For more information read : /usr/share/common-licenses/GPL-3
 #
@@ -19,11 +19,13 @@
 # 11 - enable or disable a vhost
 # 12 - edit php.ini
 
-import sys, os, gtk, appindicator
+import os
+import gtk
+import appindicator
 
 TERM="terminator"
 PHPINI_PATH = "/etc/php5/apache2/php.ini"
-PERMSITE_PATH = os.path.expanduser('~')+'/bin/'
+PERMSITE_PATH = os.path.expanduser('~') + '/bin/'
 FILE_BROWSER = "nautilus"
 WEB_BROWSER = "firefox"
 EDITOR = "gedit"
@@ -54,20 +56,20 @@ def get_apache_info(site):
         if "ServerName" in line:
             apache_info['server_name'] = str.strip(line[line.find("ServerName")+len("ServerName"):])
         if "DocumentRoot" in line:
-            apache_info['document_root'] = str.strip(line[line.find("DocumentRoot")+len("DocumentRoot"):]) 
+            apache_info['document_root'] = str.strip(line[line.find("DocumentRoot")+len("DocumentRoot"):])
     return apache_info
 
 def browse_files (widget,data):
     os.system("%s %s" % (FILE_BROWSER, get_apache_info(data)['document_root']))
 
 def browse_website(widget,data):
-    os.system("%s -new-window %s" % (WEB_BROWSER, get_apache_info(data)['server_name']))   
+    os.system("%s -new-window %s" % (WEB_BROWSER, get_apache_info(data)['server_name']))
 
 def show_log(widget,data):
     os.system("%s  -m -e \"tail -n 99 -f %s \" &" % (TERM,get_apache_info(data)['error_log']))
 
-def edit_vhost(widget,site):
-    os.system("gksu gedit %s &" % '/etc/apache2/sites-available/'+site)
+def edit_vhost(widget, site):
+    os.system("gksu gedit /etc/apache2/sites-available/%s &" % site)
 
 def clear_log(widget,data):
     os.system("echo \"\" | gksu tee %s" %  get_apache_info(data)['error_log'])
@@ -90,8 +92,6 @@ def enable_disable(widget,site,site_item):
     restart_apache(None)
 
 if __name__ == "__main__":
-
-    
     ind = appindicator.Indicator ("apache-icon", "apache-icon", appindicator.CATEGORY_APPLICATION_STATUS)
     ind.set_status (appindicator.STATUS_ACTIVE)
     menu = gtk.Menu()
@@ -104,8 +104,6 @@ if __name__ == "__main__":
     phpini_item.connect("activate", edit_phpini)
     menu.append(phpini_item)
 
-    
-
     restart_apache_item = gtk.MenuItem("Restart Apache")
     restart_apache_item.connect("activate", restart_apache)
     menu.append(restart_apache_item)
@@ -115,7 +113,7 @@ if __name__ == "__main__":
     menu.append(chown_item)
 
     separator = gtk.SeparatorMenuItem()
-    menu.append(separator) 
+    menu.append(separator)
 
     for site in sitesavailable:
         site_item = gtk.ImageMenuItem(site)
@@ -141,7 +139,7 @@ if __name__ == "__main__":
 
         show_log_item = gtk.MenuItem("Show error log")
         show_log_item.connect("activate",show_log,site)
-        submenu.append(show_log_item)     
+        submenu.append(show_log_item)
 
         clear_log_item = gtk.MenuItem("Clear error log")
         clear_log_item.connect("activate",clear_log,site)
@@ -157,7 +155,7 @@ if __name__ == "__main__":
 
         edit_vhost_item = gtk.MenuItem("Edit vhost config")
         edit_vhost_item.connect("activate", edit_vhost,site)
-        submenu.append(edit_vhost_item)      
+        submenu.append(edit_vhost_item)
 
         site_item.set_submenu(submenu)
         menu.append(site_item)
