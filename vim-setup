@@ -68,6 +68,6 @@ if [ ! -f ./syntax/vala.vim ] ; then
     wget "http://live.gnome.org/Vala/Vim?action=AttachFile&do=get&target=vala.vim"  -O ./syntax/vala.vim
 fi
 
-if [! -f $(which php_beautifier) ] ; then
+if [ ! -f $(which php_beautifier) ] ; then
     sudo pear install PHP_Beautifier-0.1.15
 fi

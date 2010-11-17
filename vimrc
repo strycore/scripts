@@ -49,15 +49,15 @@
 "
 
 " Function keys:
-" F1: Help
-" F2: Close buffer
-" F3: Toggle NERDTree
-" F4: Toggle TagList
-" F5: Previous buffer
-" F6: Next buffer
-" F7: Toggle paste mode
-" F8: Toggle between action and template in symfony
-" F9: Reindent whole file
+" F1:  Help
+" F2:  Close buffer
+" F3:  Toggle NERDTree
+" F4:  Toggle TagList
+" F5:  Previous buffer
+" F6:  Next buffer
+" F7:  Toggle paste mode
+" F8:  Toggle between action and template in symfony
+" F9:  Reindent whole file
 " F10: Available
 " F11: Reserved for fullscreen switching by WM or Terminal emulator
 " F12: Available
@@ -152,7 +152,7 @@ if has('autocmd')
     autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 
     autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
-    autocmd FileType html set equalprg=tidy\ -i \ -q
+    autocmd FileType html set equalprg=tidy\ -i\ -q
 
     autocmd FileType css set omnifunc=csscomplete#CompleteCSS
     autocmd FileType css set equalprg=csstidy
@@ -161,7 +161,7 @@ if has('autocmd')
 
     autocmd FileType php set omnifunc=phpcomplete#CompletePHP
     autocmd FileType php set ft=php.html
-    autocmd FileTYpe php set equalprg=php_beautifier\ -s2
+    autocmd FileTYpe php set equalprg=php_beautifier\ -l\ \"Pear()\ ArrayNested()\"\ -s2
 
     autocmd FileType c set omnifunc=ccomplete#Complete
 
@@ -247,24 +247,24 @@ map <silent> <F8> :SfSwitchView<CR>
 nmap <F9> 1G=G
 imap <F9> <ESC>1G=Ga
 
-"Refactor variable names
-nnoremap <C-r> gd[{V%:s/<C-R>///gc<left><left><left>
-
 " Save file with sudo
 cmap w!! w !sudo tee % > /dev/null
 
 nmap SQ <ESC>:NERDTreeClose<CR>:mksession! ~/.vim/session.vim<CR>:wqa<CR>
 
+" After trying the RestoreSession, it has proved to be fucking annoying
+" It will be commented out until sessions work per directory.
+"
+" The best way to achieve this should be by storing the session.vim inside
+" each  individual directory.
+"
+"function! RestoreSession()
+"    if argc() == 0
+"    	execute 'source ~/.vim/session.vim'
+"    end
+"endfunction
 
-function! RestoreSession()
-
-    if argc() == 0
-    	execute 'source ~/.vim/session.vim'
-    end
-
-endfunction
-
-autocmd VimEnter * call RestoreSession()
+"autocmd VimEnter * call RestoreSession()
 
 set path=$PWD/**
 
