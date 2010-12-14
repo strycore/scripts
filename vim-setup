@@ -6,6 +6,7 @@ cp $HOME/bin/vimrc $HOME/.vimrc
 
 mkdir -p $HOME/.vim/plugin
 mkdir -p $HOME/.vim/colors
+mkdir -p $HOME/.vim/syntax
 
 cd $HOME/.vim
 
@@ -66,6 +67,10 @@ fi
 
 if [ ! -f ./syntax/vala.vim ] ; then
     wget "http://live.gnome.org/Vala/Vim?action=AttachFile&do=get&target=vala.vim"  -O ./syntax/vala.vim
+fi
+
+if [ ! -f ./syntax/python.vim ] ; then
+    wget "http://www.vim.org/scripts/download_script.php?src_id=12804" -O ./syntax/python.vim
 fi
 
 if [ ! -f $(which php_beautifier) ] ; then

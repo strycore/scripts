@@ -24,6 +24,9 @@
 " Hacking Vim – The Ultimate Vimrc
 " http://www.jonlee.ca/hacking-vim-the-ultimate-vimrc/
 "
+" Python and vim: Make your own IDE
+" http://dancingpenguinsoflight.com/2009/02/python-and-vim-make-your-own-ide/
+"
 " Plugins
 " -------
 " For automatic plugin installation, see the vim-setup script
@@ -146,6 +149,7 @@ if has('autocmd')
     autocmd FileType make setlocal ts=8 sts=8 sw=8 noexpandtab
     autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
+    "autocmd FileType python set complete+=k~/.vim/syntax/python.vim isk+=.,(
     autocmd FileType python set omnifunc=pythoncomplete#Complete
     autocmd FileType python set expandtab
 
@@ -219,9 +223,7 @@ let Tlist_Display_Tag_Scope = 1 " Show tag scope next to the tag name.
 let Tlist_GainFocus_On_ToggleOpen =  0 " Jump to taglist window on open.
 let Tlist_WinWidth = 40
 
-set tags=.vimtags
-set tags+=$HOME/.vim/tags/python.ctags
-set tags+=$HOME/.vim/tags/django.ctags
+set tags=tags;$HOME/.vim/tags/
 
 " SnipMate config
 let g:snips_author = 'Mathieu Comandon'
