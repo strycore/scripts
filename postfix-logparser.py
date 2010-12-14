@@ -133,7 +133,6 @@ for line in maillog:
             pass #Ignore this line
             line_parsed = True
 
-
         if command.startswith('postfix/smtp') or command.startswith('postfix/local'):
             elems = details.split(', ')
             if len(elems) > 1:
