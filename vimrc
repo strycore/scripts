@@ -24,8 +24,13 @@
 " Hacking Vim – The Ultimate Vimrc
 " http://www.jonlee.ca/hacking-vim-the-ultimate-vimrc/
 "
+
 " Python and vim: Make your own IDE
 " http://dancingpenguinsoflight.com/2009/02/python-and-vim-make-your-own-ide/
+
+" Vim as a Python IDE
+" http://code.google.com/p/trespams-vim/
+
 "
 " Plugins
 " -------
@@ -85,9 +90,10 @@ set mouse=a
 syntax on
 
 " Color scheme
-" available schemes : desert256, railscasts
+" available schemes : desert256, railscasts, wombat, wombat256, wombat256mod,
+"                     tango, django
 set t_Co=256
-colorscheme railscasts
+colorscheme wombat256
 
 " Identation and tabs
 set smartindent
@@ -111,27 +117,38 @@ set hlsearch   " highlight search terms
 nmap <silent> ,/ :nohlsearch<CR>
 set incsearch
 
-" set foldenable
-set fdm=indent
+set foldmethod=indent
+set foldlevelstart=99
+set nofoldenable
 set nowrap
-set gdefault
+set gdefault  " Search all occurrences by default
 set history=1000
 set undolevels=1000
+set wildmenu
+set wildmode=longest:full,list
 set wildignore=*.swp,*.bak,*.pyc,*.class
 set title
 set noerrorbells
 set nobackup    " Backup files are sooo 90's
 set noswapfile  " Swap files are very annoying
 set lazyredraw
+set scrolloff=3 "Keep 3 lines below and above the cursor
 
 set cursorline
 set number
+set numberwidth=1
+set shortmess+=a
+set report=0
+set confirm
 set encoding=utf8
 set foldmethod=manual
+set matchpairs+=<:>
+set showfulltag
 
 let mapleader=","
 let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 let g:showmarks_enable = 1
+
 
 " Highlight long lines
 " TODO Hightlight only the 80th character, having the whole end of line in red
@@ -143,34 +160,41 @@ else
     match OverLength /\%81v.\+/
 endif
 
+highlight BadWhitespace ctermbg=red guibg=red
+
 filetype plugin on
 filetype indent on
 if has('autocmd')
     autocmd FileType make setlocal ts=8 sts=8 sw=8 noexpandtab
     autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
-    "autocmd FileType python set complete+=k~/.vim/syntax/python.vim isk+=.,(
+
+    autocmd FileType c set omnifunc=ccomplete#Complete
+
+    autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+
     autocmd FileType python set omnifunc=pythoncomplete#Complete
-    autocmd FileType python set expandtab
+    autocmd BufRead,BufNewFile *.py  set ai sw=4 sts=4 et tw=72
+
+    " Display tabs at the beginning of a line in Python mode as bad.
+    autocmd BufRead,BufNewFile *.py,*.pyw match BadWhitespace /^\t\+/
+    " Make trailing whitespace be flagged as bad.
+    autocmd BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
 
     autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 
     autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
     autocmd FileType html set equalprg=tidy\ -i\ -q
 
+    autocmd BufNewFile,BufRead *.rss setfiletype xml
+    autocmd BufNewFile,BufRead *.less setfiletype css
+
     autocmd FileType css set omnifunc=csscomplete#CompleteCSS
     autocmd FileType css set equalprg=csstidy
 
-    autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
-
     autocmd FileType php set omnifunc=phpcomplete#CompletePHP
     autocmd FileType php set ft=php.html
-    autocmd FileTYpe php set equalprg=php_beautifier\ -l\ \"Pear()\ ArrayNested()\"\ -s2
-
-    autocmd FileType c set omnifunc=ccomplete#Complete
-
-    autocmd BufNewFile,BufRead *.rss setfiletype xml
-    autocmd BufNewFile,BufRead *.less setfiletype css
+    autocmd FileType php set equalprg=php_beautifier\ -l\ \"Pear()\ ArrayNested()\"\ -s2
 
     " run file with PHP CLI (CTRL-M)
     autocmd FileType php noremap <C-M> :w!<CR>:!php %<CR>
@@ -186,6 +210,7 @@ if has('autocmd')
 endif
 if has("gui_running")
     highlight SpellBad term=underline gui=undercurl guisp=Orange
+    set guifont=Inconsolata\ Medium\ 12
 endif
 
 " Invisible characters
@@ -206,6 +231,7 @@ noremap <C-S-pageDown> gT
 
 " Remap autocompletion to Ctrl-Space
 inoremap <Nul> <C-x><C-o>
+imap <C-space> <C-x><C-o>
 
 " MiniBufExplorer configuration
 let g:miniBufExplMapWindowNavVim = 1

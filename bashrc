@@ -2,10 +2,6 @@
 
 [ -z "$PS1" ] && return
 
-if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
-    . /etc/bash_completion
-fi
-
 export HISTFILESIZE=100000000
 export HISTSIZE=100000
 export HISTIGNORE="cd:ls:[bf]g:clear:exit"
@@ -83,3 +79,7 @@ alias hosts='$EDITOR /etc/hosts'
 alias sfba="./symfony doctrine:build --all --and-load"
 alias alert_helper='history|tail -n1|sed -e "s/^\s*[0-9]\+\s*//" -e "s/;\s*alert$//"'
 alias alert='notify-send -i /usr/share/icons/gnome/32x32/apps/gnome-terminal.png "[0] "'
+
+if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+    . /etc/bash_completion
+fi

