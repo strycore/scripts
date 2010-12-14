@@ -6,6 +6,8 @@ cp $HOME/bin/vimrc $HOME/.vimrc
 
 mkdir -p $HOME/.vim/plugin
 mkdir -p $HOME/.vim/colors
+mkdir -p $HOME/.vim/syntax
+mkdir -p $HOME/.vim/snippets
 
 cd $HOME/.vim
 
@@ -31,6 +33,14 @@ if [ ! -f ./plugin/project.vim ]; then
     rm project-1.4.1.tar.gz
 fi
 
+# Fonts
+
+if [ ! -f $HOME/.fonts/Inconsolata.otf ] ; then
+    wget "http://www.fontex.org/get/Inconsolata.otf" -O $HOME/.fonts/Inconsolata.otf
+fi
+
+# Color schemes
+
 if [ ! -f ./colors/desert256.vim ] ; then
     wget "http://www.vim.org/scripts/download_script.php?src_id=4055" -O ./colors/desert256.vim
 fi
@@ -38,6 +48,28 @@ fi
 if [ ! -f ./colors/railscasts.vim ] ; then
     wget "http://www.vim.org/scripts/download_script.php?src_id=8379" -O ./colors/railscasts.vim
 fi
+
+if [ ! -f ./colors/wombat.vim ] ; then
+    wget "http://www.vim.org/scripts/download_script.php?src_id=6657" -O ./colors/wombat.vim
+fi
+
+if [ ! -f ./colors/wombat256.vim ] ; then
+    wget "http://www.vim.org/scripts/download_script.php?src_id=13397" -O ./colors/wombat256.vim
+fi
+
+if [ ! -f ./colors/wombat256mod.vim ] ; then
+    wget "http://www.vim.org/scripts/download_script.php?src_id=13400" -O ./colors/wombat256mod.vim
+fi
+
+if [ ! -f ./colors/tango.vim ] ; then
+    wget "http://www.vim.org/scripts/download_script.php?src_id=6361" -O ./colors/tango.vim
+fi
+
+if [ ! -f ./colors/django.vim ] ; then
+    wget "http://www.vim.org/scripts/download_script.php?src_id=7015" -O ./colors/django.vim
+fi
+
+#
 
 if [ ! -f ./plugin/symfony.vim ] ; then
     wget "http://www.vim.org/scripts/download_script.php?src_id=8739" -O ./plugin/symfony.vim
@@ -70,4 +102,12 @@ fi
 
 if [ ! -f $(which php_beautifier) ] ; then
     sudo pear install PHP_Beautifier-0.1.15
+fi
+
+if [ -z $(which ctags) ] ; then
+    sudo apt-get install ctags
+fi
+
+if [ $(python -c "import rope" 2>&1 | grep ImportError | wc -c) -gt 0 ] ; then
+    sudo apt-get install python-rope
 fi
