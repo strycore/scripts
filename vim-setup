@@ -107,11 +107,15 @@ fi
 if [ ! -f $(which php_beautifier) ] ; then
     sudo pear install PHP_Beautifier-0.1.15
 fi
-
-if [ -z $(which ctags) ] ; then
-    sudo apt-get install ctags
+if [ $(which apt-get) ] ; then
+  INSTALLER="apt-get"
 fi
+if [ $INSTALLER ] ; then
+    if [ -z $(which ctags) ] ; then
+        sudo apt-get install ctags
+    fi
 
-if [ $(python -c "import rope" 2>&1 | grep ImportError | wc -c) -gt 0 ] ; then
-    sudo apt-get install python-rope
+    if [ $(python -c "import rope" 2>&1 | grep ImportError | wc -c) -gt 0 ] ; then
+        sudo apt-get install python-rope
+    fi
 fi
