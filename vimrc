@@ -79,6 +79,13 @@
 " "+y  copy to system clipboard
 " <Shift>Ins paste from system clipboard
 "
+" TODO List
+"
+" Better autocompletion
+" Better help system
+" Prevent files from opening on the left side of miniBufExpl
+"
+"
 set nocompatible
 set showcmd
 set showmode
