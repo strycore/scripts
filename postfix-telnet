@@ -4,11 +4,11 @@ import pexpect
 import sys
 import base64
 
-email_to = "strycore@gmail.com"
+email_to = ""
 email_from = email_to
-login='change_me'
-password='change_me'
-hostname = 'strycore.com'
+login='mailer'
+password=''
+hostname = ''
 
 telnet_session = pexpect.spawn('telnet ' + hostname + ' 25')
 telnet_session.logfile_read = sys.stdout
