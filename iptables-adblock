@@ -1,0 +1,4 @@
+#!/bin/bash
+
+iptables -A INPUT -s partypoker.fr -j DROP
+iptables -A OUTPUT -d partypoker.fr -j DROP
