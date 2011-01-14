@@ -109,7 +109,6 @@ set softtabstop=4
 set shiftwidth=4
 set shiftround
 set expandtab
-set copyindent
 set backspace=indent,eol,start
 
 set linespace=4
