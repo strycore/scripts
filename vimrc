@@ -284,22 +284,6 @@ imap <F9> <ESC>1G=Ga
 " Save file with sudo
 cmap w!! w !sudo tee % > /dev/null
 
-nmap SQ <ESC>:NERDTreeClose<CR>:mksession! ~/.vim/session.vim<CR>:wqa<CR>
-
-" After trying the RestoreSession, it has proved to be fucking annoying
-" It will be commented out until sessions work per directory.
-"
-" The best way to achieve this should be by storing the session.vim inside
-" each  individual directory.
-"
-"function! RestoreSession()
-"    if argc() == 0
-"    	execute 'source ~/.vim/session.vim'
-"    end
-"endfunction
-
-"autocmd VimEnter * call RestoreSession()
-
 set path=$PWD/**
 
 python << EOF

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+PROJECT=$(python -c "import os; print os.path.basename(os.getcwd())")
+echo $PROJECT
+DJANGO_SETTINGS_MODULE=$PROJECT.settings vim
