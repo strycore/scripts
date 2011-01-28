@@ -223,6 +223,9 @@ endif
 set listchars=tab:▸\ ,trail:.,extends:#,nbsp:.,eol:¬
 nmap <leader>l :set list!<CR>
 
+" Detect filetype shortcut
+nmap <leader>f :filetype detect<CR>
+
 " I think this part remove useless trailing spaces
 autocmd BufRead * silent! %s/[\r \t]\+$//
 autocmd BufEnter *.php :%s/[ \t\r]\+$//e
