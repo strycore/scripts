@@ -2,7 +2,19 @@
 
 VERSION="1.2.3"
 
-wget http://www.djangoproject.com/download/$VERSION/tarball/ -O Django-$VERSION.tar.gz
-tar xzvf Django-$VERSION.tar.gz
-cd Django-$VERSION
-sudo python setup.py install
+# TODO : fetch the latest stable python version from http://www.djangoproject.com/download/
+#        line : The latest official version is x.x.x
+
+installed_version=$(dpkg -l | grep "\spython-django\s")
+
+if [ ! -z $installed_version ] ; do
+    real_version=$(python -c "import django; v=django.VERSION; print '.'.join(map(lambda x: str(x), v[:3]))")
+    echo $real_version
+done
+
+exit
+
+#wget http://www.djangoproject.com/download/$VERSION/tarball/ -O Django-$VERSION.tar.gz
+#tar xzvf Django-$VERSION.tar.gz
+#cd Django-$VERSION
+#sudo python setup.py install
