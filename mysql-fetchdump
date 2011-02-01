@@ -2,11 +2,11 @@
 #
 # mysql-fetchdump : Fetchs a MySQL dump from a distant server with SSH
 # Only works with key-type SSH authentication
-# See : http://wiki.strycore.com/index.php/Ssh if you don't know how to 
+# See : http://wiki.strycore.com/index.php/Ssh if you don't know how to
 # setup ssh to login without a password.
 #
 # Version 0.1 (2010/07/22)
-# (c) 2010 Mathieu Comandon 
+# (c) 2010 Mathieu Comandon
 # Licensed under the terms of the GPL Version 3
 #
 
@@ -21,7 +21,7 @@ Dumps a MySQL database with the schema and data
 
 OPTIONS:
   -h, --host=host            IP or domain name of the distant server
-  -l, --login=user           Unix account on the remote server (Default: your local login)  
+  -l, --login=user           Unix account on the remote server (Default: your local login)
   -u, --user=user            MySQL user for the remote server
   -p, --password=password    MySQL password for the remote server
   -d, --database=database    Name of the database on the remote server
@@ -37,7 +37,7 @@ if [ "$#" -eq 0 ] ; then
     exit 2
 fi
 
-PARAMS=`getopt -n $0 -o u:p:d:o:l:H:hv --long user:,password:,database:,output_dir:,host:,login:,verbose,help -- "$@"`
+PARAMS=$(getopt -n $0 -o u:p:d:o:l:H:hv --long user:,password:,database:,output_dir:,host:,login:,verbose,help -- "$@")
 eval set -- "$PARAMS"
 while true ; do
     case "$1" in
@@ -79,7 +79,7 @@ fi
 
 if [ ! -d "$destdir" ] ; then
     echo "Destination directory doesn't exist !"
-    error_state=1    
+    error_state=1
 fi
 
 if [ "$error_state" = 1 ] ; then
@@ -89,7 +89,7 @@ fi
 echo $destdir
 #Dump remote database
 remote_command="mysql-autodump -d ${mysql_database} -u ${mysql_user} -p ${mysql_password} -z"
-if [ $verbose ] ; then 
+if [ $verbose ] ; then
     echo "Dumping remote database"
 fi
 dumpfile=$(ssh $ssh_user@$host $remote_command)
