@@ -4,6 +4,7 @@ set -e
 
 cp $HOME/bin/vimrc $HOME/.vimrc
 
+mkdir -p $HOME/.fonts
 mkdir -p $HOME/.vim/plugin
 mkdir -p $HOME/.vim/colors
 mkdir -p $HOME/.vim/syntax
