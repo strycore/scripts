@@ -11,6 +11,10 @@ export BROWSER='firefox'
 export DEBEMAIL="strycore@gmail.com"
 export DEBFULLNAME="Mathieu Comandon"
 
+if [ -d /var/lib/gems/1.8/bin ] ; then
+    export PATH=$PATH:/var/lib/gems/1.8/bin
+fi
+
 shopt -s cdspell
 shopt -s histappend
 shopt -s checkwinsize
