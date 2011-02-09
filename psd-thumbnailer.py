@@ -11,9 +11,9 @@ from PIL import Image
 cwd, maxxy, infile, outfile = sys.argv
 size = int(maxxy), int(maxxy)
 
-logfile = open('/home/mathieu/psd.log', 'a')
-logfile.write("Writing thumb for psd file : %s \n" % infile)
-logfile.close()
+#logfile = open('/home/mathieu/psd.log', 'a')
+#logfile.write("Writing thumb for psd file : %s \n" % infile)
+#logfile.close()
 
 im = Image.open(infile)
 im.thumbnail(size, Image.ANTIALIAS)

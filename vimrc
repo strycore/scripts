@@ -180,7 +180,7 @@ if has('autocmd')
     autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
 
     autocmd FileType python set omnifunc=pythoncomplete#Complete
-    autocmd BufRead,BufNewFile *.py  set ai sw=4 sts=4 et tw=72
+    autocmd BufRead,BufNewFile *.py  set ai sw=4 sts=4 et 
 
     " Display tabs at the beginning of a line in Python mode as bad.
     autocmd BufRead,BufNewFile *.py,*.pyw match BadWhitespace /^\t\+/
