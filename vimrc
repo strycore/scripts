@@ -157,28 +157,25 @@ let g:showmarks_enable = 1
 
 
 " Highlight long lines
-" TODO Hightlight only the 80th character, having the whole end of line in red
-"      is ugly and confusing
-if has('colorcolumn')
-	set colorcolumn=+80
+if exists('+colorcolumn')
+    set colorcolumn=80
+    highlight ColorColumn ctermbg=darkgray guibg=#4E4E4E
 else
-    highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-    match OverLength /\%81v.\+/
+    au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
 endif
 
 highlight BadWhitespace ctermbg=red guibg=red
 let python_highlight_builtin_funcs = 1
 let python_print_as_function = 1
 let python_highlight_builtin_objs = 1
-let python_highlight_doctests = 1 
+let python_highlight_doctests = 1
 let python_highlight_string_templates = 1
 
 filetype plugin on
 filetype indent on
 if has('autocmd')
-    autocmd FileType make setlocal ts=8 sts=8 sw=8 noexpandtab
+    autocmd FileType make setlocal ts=8 sts=8 sw=8 noexpandtab "Makefiles require hard tabs
     autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
-
 
     autocmd FileType c set omnifunc=ccomplete#Complete
 
@@ -219,7 +216,7 @@ if has('autocmd')
     autocmd BufRead,BufNewFile *.vala setfiletype vala
     autocmd BufRead,BufNewFile *.vapi setfiletype vala
     if filereadable('./manage.py')
-        colorscheme desert256
+        colorscheme railscasts
         autocmd FileType python set ft=python.django " For SnipMate
         autocmd FileType html set ft=htmldjango.html " For SnipMate
     endif
