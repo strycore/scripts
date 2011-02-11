@@ -35,7 +35,6 @@ if [ ! -f ./plugin/project.vim ]; then
 fi
 
 # Fonts
-
 if [ ! -f $HOME/.fonts/Inconsolata.otf ] ; then
     wget "http://www.fontex.org/get/Inconsolata.otf" -O $HOME/.fonts/Inconsolata.otf
 fi
@@ -88,7 +87,7 @@ fi
 if [ ! -f ./plugin/snipMate.vim ] ; then
     wget "http://www.vim.org/scripts/download_script.php?src_id=11006" -O ./snipMate.zip
     unzip ./snipMate.zip
-    rm ./snipMate.zip
+    rm -rf ./snipMate.zip
 fi
 
 if [ ! -f ./plugin/surround.vim ] ; then
@@ -103,6 +102,13 @@ fi
 
 if [ ! -f ./syntax/python.vim ] ; then
     wget "http://www.vim.org/scripts/download_script.php?src_id=12804" -O ./syntax/python.vim
+fi
+
+if [ ! -f ./snippets/htmldjango.snippets ] ; then
+    git clone https://github.com/robhudson/snipmate_for_django.git
+    cp snipmate_for_django/snippets/htmldjango.snippets ./snippets/
+    cp snipmate_for_django/snippets/django.snippets ./snippets/
+    rm -rf snipmate_for_django
 fi
 
 if [ ! -f $(which php_beautifier) ] ; then

@@ -180,7 +180,7 @@ if has('autocmd')
     autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
 
     autocmd FileType python set omnifunc=pythoncomplete#Complete
-    autocmd BufRead,BufNewFile *.py  set ai sw=4 sts=4 et 
+    autocmd BufRead,BufNewFile *.py  set ai sw=4 sts=4 et
 
     " Display tabs at the beginning of a line in Python mode as bad.
     autocmd BufRead,BufNewFile *.py,*.pyw match BadWhitespace /^\t\+/
@@ -213,6 +213,11 @@ if has('autocmd')
     autocmd BufRead *.vapi set efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
     autocmd BufRead,BufNewFile *.vala setfiletype vala
     autocmd BufRead,BufNewFile *.vapi setfiletype vala
+    if filereadable('./manage.py')
+        colorscheme django
+        autocmd FileType python set ft=python.django " For SnipMate
+        autocmd FileType html set ft=htmldjango.html " For SnipMate
+    endif
 endif
 if has("gui_running")
     highlight SpellBad term=underline gui=undercurl guisp=Orange
