@@ -2,4 +2,4 @@
 
 PROJECT=$(python -c "import os; print os.path.basename(os.getcwd())")
 echo $PROJECT
-DJANGO_SETTINGS_MODULE=$PROJECT.settings vim
+DJANGO_SETTINGS_MODULE=$PROJECT.settings gvim "+cd ." "+TlistAddFilesRecursive . [^_]*py\|*html\|*css" +TlistOpen
