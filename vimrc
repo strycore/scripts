@@ -167,6 +167,11 @@ else
 endif
 
 highlight BadWhitespace ctermbg=red guibg=red
+let python_highlight_builtin_funcs = 1
+let python_print_as_function = 1
+let python_highlight_builtin_objs = 1
+let python_highlight_doctests = 1 
+let python_highlight_string_templates = 1
 
 filetype plugin on
 filetype indent on
@@ -214,7 +219,7 @@ if has('autocmd')
     autocmd BufRead,BufNewFile *.vala setfiletype vala
     autocmd BufRead,BufNewFile *.vapi setfiletype vala
     if filereadable('./manage.py')
-        colorscheme django
+        colorscheme desert256
         autocmd FileType python set ft=python.django " For SnipMate
         autocmd FileType html set ft=htmldjango.html " For SnipMate
     endif
