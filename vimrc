@@ -223,7 +223,7 @@ if has('autocmd')
 endif
 if has("gui_running")
     highlight SpellBad term=underline gui=undercurl guisp=Orange
-    set guifont=Inconsolata\ Medium\ 12
+    set guifont=Inconsolata\ Medium\ 10
 endif
 
 " Invisible characters
