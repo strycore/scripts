@@ -40,7 +40,6 @@ if [ ! -f $HOME/.fonts/Inconsolata.otf ] ; then
 fi
 
 # Color schemes
-
 if [ ! -f ./colors/desert256.vim ] ; then
     wget "http://www.vim.org/scripts/download_script.php?src_id=4055" -O ./colors/desert256.vim
 fi
@@ -67,6 +66,10 @@ fi
 
 if [ ! -f ./colors/django.vim ] ; then
     wget "http://www.vim.org/scripts/download_script.php?src_id=7015" -O ./colors/django.vim
+fi
+
+if [ ! -f ./colors/molokai.vim ] ; then
+    wget "http://www.vim.org/scripts/download_script.php?src_id=9750" -O ./colors/molokai.vim
 fi
 
 #

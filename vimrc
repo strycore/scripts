@@ -216,7 +216,7 @@ if has('autocmd')
     autocmd BufRead,BufNewFile *.vala setfiletype vala
     autocmd BufRead,BufNewFile *.vapi setfiletype vala
     if filereadable('./manage.py')
-        colorscheme railscasts
+        colorscheme molokai
         autocmd FileType python set ft=python.django " For SnipMate
         autocmd FileType html set ft=htmldjango.html " For SnipMate
     endif
