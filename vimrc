@@ -216,7 +216,6 @@ if has('autocmd')
     autocmd BufRead,BufNewFile *.vala setfiletype vala
     autocmd BufRead,BufNewFile *.vapi setfiletype vala
     if filereadable('./manage.py')
-        colorscheme molokai
         autocmd FileType python set ft=python.django " For SnipMate
         autocmd FileType html set ft=htmldjango.html " For SnipMate
     endif
@@ -224,6 +223,7 @@ endif
 if has("gui_running")
     highlight SpellBad term=underline gui=undercurl guisp=Orange
     set guifont=Inconsolata\ Medium\ 10
+    colorscheme molokai
 endif
 
 " Invisible characters
