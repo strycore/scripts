@@ -7,6 +7,6 @@ for PKG_NAME in `cat $1` ; do
 	if [ "$STATUS" = "installed" ]; then
 		echo $PKG_NAME" is installed"
 	else
-		gksudo "apt-get install -y --install-recommends $PKG_NAME"
+		apt-get install -y --install-recommends $PKG_NAME
 	fi
 done
