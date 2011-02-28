@@ -1,0 +1,5 @@
+#!/bin/bash
+
+svg=$1
+inkscape --file=$svg --export-pdf=${svg%svg}'pdf'
+
