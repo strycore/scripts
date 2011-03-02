@@ -1,0 +1,17 @@
+#!/bin/bash
+angle=`xrandr | grep connected | awk '{print $4}'`
+newangle='left'
+if [ $angle = 'left' ];
+then
+	newangle='inverted'
+fi
+if [ $angle = 'inverted' ];
+then
+	newangle='right'
+fi
+if [ $angle = 'right' ];
+then
+	newangle='normal'
+fi
+
+xrandr --output default --rotate $newangle
