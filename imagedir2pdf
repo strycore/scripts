@@ -1,0 +1,90 @@
+#!/bin/bash
+#
+# imagedir2svg : Convert a directory of images to a single PDF
+#
+#
+# Version 0.1 (2011/03/03)
+# (c) 2011 Mathieu Comandoni <strider@strycore.com>
+# (c) 2011 Jean Casanova <cepcasa@gmail.com>
+# Licensed under the terms of the GPL Version 3
+#
+
+
+set -e
+
+usage()
+{
+    cat << EOF
+Usage: $0 [OPTION]... destination
+Convert a directory of image to a single PDF file
+
+OPTIONS:
+ -i, --input    Directory to convert (Default: current directory)
+ -m, --method   Method used to convert to PDF (convert or sam2p, default to convert)
+EOF
+}
+
+
+# Parse arguments
+if [ "$#" -eq 0 ] ; then
+    usage
+    exit 2
+fi
+
+PARAMS=$(getopt -n $0 -o i:m:h --long input:,method:help -- "$@")
+eval set -- "$PARAMS"
+while true ; do
+    case "$1" in
+        -i|--input) input_dir=$2 ; shift 2 ;;
+        -m|--method) method=$2 ; shift 2 ;;
+        --) dest_dir=$2 ; shift ; break ;;
+        -h|--help) usage ; exit 2 ;;
+        *) usage ; exit 2 ;;
+    esac
+done
+
+if [ ! -d "$dest_dir" ] ; then
+    echo "$dest_dir is not valid destination!"
+    exit 2
+fi
+
+if [ -z "$dest_dir" ] ; then
+    echo "You must specify an output dir!"
+    exit 2
+fi
+
+if [ "$method" != "sam2p" ] ; then
+    method="convert"
+fi
+
+if [ -z $(which $method) ] ; then
+    echo "You must install $method to continue "
+    exit 2
+fi
+
+if [ -z $(which pdftk) ] ; then
+    echo "You must install pdftk to continue "
+    exit 2
+fi
+
+if [ -z "$input_dir" ] ; then
+    input_dir=$PWD
+fi
+pdfname=$(basename $input_dir)
+oldpwd=$PWD
+cd $input_dir
+IFS=$(echo -en "\n\b")
+shopt -s extglob
+temp_dir=$(mktemp -d)
+index=1
+
+for image in $(ls *(*.jpg|*.png)) ; do
+    $method $image $temp_dir/page$(printf "%03d" $index).pdf
+    let index=$index+1
+done
+
+pdftk ${temp_dir}/*.pdf cat output ${dest_dir}/${pdfname}.pdf
+
+rm -r $temp_dir
+cd $oldpwd
+
