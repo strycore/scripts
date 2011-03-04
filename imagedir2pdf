@@ -1,11 +1,10 @@
 #!/bin/bash
 #
-# imagedir2svg : Convert a directory of images to a single PDF
+# imagedir2pdf : Convert a directory of images to a single PDF
 #
 #
 # Version 0.1 (2011/03/03)
 # (c) 2011 Mathieu Comandoni <strider@strycore.com>
-# (c) 2011 Jean Casanova <cepcasa@gmail.com>
 # Licensed under the terms of the GPL Version 3
 #
 
@@ -16,7 +15,7 @@ usage()
 {
     cat << EOF
 Usage: $0 [OPTION]... destination
-Convert a directory of image to a single PDF file
+Convert a directory of images to a single PDF file
 
 OPTIONS:
  -i, --input    Directory to convert (Default: current directory)
