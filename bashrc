@@ -15,8 +15,21 @@ if [ -d /var/lib/gems/1.8/bin ] ; then
     export PATH=$PATH:/var/lib/gems/1.8/bin
 fi
 
+#minor errors in the spelling of a directory
+#component in a cd command will be corrected.
 shopt -s cdspell
+#Bash attempts spelling correction on directory 
+#names during word completion if the directory 
+#name initially supplied does not exist. 
+shopt -s dirspell
+#the history list is appended to the file 
+#named by the value of the HISTFILE variable 
+#when the shell exits, rather than overwriting 
+#the file.
 shopt -s histappend
+#Bash checks the window size after each command 
+#and, if necessary, updates the values of LINES 
+#and COLUMNS.
 shopt -s checkwinsize
 
 complete -cf sudo           #tab complete for sudo

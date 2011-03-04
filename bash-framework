@@ -1,0 +1,146 @@
+#!/bin/bash
+#
+# script-name -- short desctription of what is does
+# Copyright (C) 2011 Your Name <your@email.com>
+#
+# Version 0.0 (1970/01/01)
+#
+# Licensed under <insert your favorite open source licence here>
+#
+
+
+# Quit script on error
+set -e
+
+function usage {
+    cat << EOF
+Usage: $0 [OPTION]... [FILE]...
+Insert description here.
+
+Explain argument usage here.
+  -a, --optiona              explain option a
+  -b, --optionb              explain option b
+  -c, --optionc=VAL          explain option c and VAL requirements
+EOF
+}
+
+function error {
+    #Do error handling here, like cleanup and suff
+    rm $temp_dir
+    #Or you can send an email
+    mail $USER -s "Your script has crashed"
+}
+trap error ERR
+
+function cleanup {
+    #Do some cleanup in case script is prematurely interrupted
+    echo "cleanup"
+    exit 2
+}
+trap cleanup SIGINT SIGTERM
+
+#Parse arguments
+
+#If the script doesn't require mandatory argument, remove following lines.
+if [ "$#" -eq 0 ] ; then
+    usage
+    exit 2
+fi
+
+#Describe your arguments here
+PARAMS=`getopt -n $0 -o abc:h --long optiona,optionb,optionc:,help -- "$@"`
+eval set -- "$PARAMS"
+while true ; do
+    case "$1" in
+        -a|--optiona) flag_a=1; shift ;;
+        -b|--optionb) flag_b=1 ; shift ;;
+        -c|--optionc) some_variable=$2 ; shift 2 ;;
+        -h|--help) usage ; exit 1 ;;
+        --) other_variable=$2 ; shift ; break ;;
+        *) usage ; exit 2 ;;
+    esac
+done
+
+#Error checking
+if [ -z "$other_variable" ] ; then
+    echo "Error message here"
+    exit 2
+fi
+
+#If you plan looping on directories and files with spaces
+IFS=$(echo -en "\n\b")
+
+#If you plan using globbing
+shopt -s extglob
+
+#If you need a temporary dir
+temp_dir=$(mktemp -d)
+#Then put this at the end of script
+rm -r $temp_dir
+
+#
+# Snippets
+#
+# Most snippets comes from the Advanced Bash-Scripting Guide
+# http://tldp.org/LDP/abs/html/index.html
+#
+
+#Script arguments
+num_args=$#
+args=$@
+
+# Substring Extraction
+
+${string:position}         #Extracts substring from $string at $position.
+${string:position:length}  #Extracts $length characters of substring from $string at $position. 
+${string: -position}       #index from the right end of the string
+#If the $string parameter is "*" or "@", then this extracts a maximum of $length positional parameters, starting at $position.
+#Extracts $length characters from $string starting at $position.
+expr substr $string $position $length 
+
+#Extracts $substring at beginning of $string, where $substring is a regular expression.
+#regexp reference : http://tldp.org/LDP/abs/html/regexp.html#REGEXREF
+expr match "$string" '\($substring\)' 
+
+#Extracts $substring at end of $string, where $substring is a regular expression.
+expr match "$string" '.*\($substring\)'
+#or
+expr "$string" : '.*\($substring\)'
+
+#Deletes shortest match of $substring from front of $string.
+${string#substring}        
+
+#Deletes longest match of $substring from front of $string.
+${string##substring}       
+
+#Deletes shortest match of $substring from back of $string.
+${string%substring}        
+
+# Substring removal
+
+#Deletes shortest match of $substring from front of $string.
+${string#substring}
+
+#Deletes longest match of $substring from front of $string.
+${string##substring}
+
+#Deletes shortest match of $substring from back of $string.
+${string%substring}
+
+#Deletes longest match of $substring from back of $string
+${string%%substring}
+
+# Substring Replacement
+
+#Replace first match of $substring with $replacement.
+${string/substring/replacement}
+
+#Replace all matches of $substring with $replacement.
+${string//substring/replacement}
+
+#If $substring matches front end of $string, substitute $replacement for $substring.
+${string/#substring/replacement}
+
+#If $substring matches back end of $string, substitute $replacement for $substring.
+${string/%substring/replacement}
+
