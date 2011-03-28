@@ -20,7 +20,7 @@ Usage: $0 --host=hostname --login=user --user=mysql_user --password=mysql_passwo
 Dumps a MySQL database with the schema and data
 
 OPTIONS:
-  -h, --host=host            IP or domain name of the distant server
+  -H, --host=host            IP or domain name of the distant server
   -l, --login=user           Unix account on the remote server (Default: your local login)
   -u, --user=user            MySQL user for the remote server
   -p, --password=password    MySQL password for the remote server
