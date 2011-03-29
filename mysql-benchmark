@@ -1,0 +1,63 @@
+#!/usr/bin/php
+<?php
+
+$db_params = array(
+    'host' => 'localhost',
+    'username' => 'root',
+    'password' => 'admin',
+);
+
+$link = mysql_connect(
+    $db_params['host'],
+    $db_params['username'],
+    $db_params['password']);
+
+if (!$link) {
+    die("Can't connect to mysql");
+}
+
+mysql_query('CREATE DATABASE benchmark');
+
+mysql_select_db('benchmark', $link);
+
+mysql_query("CREATE TABLE `benchmark`.`benchtable` "
+  . "(`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,"
+  . " `token` VARCHAR( 16 ) NULL DEFAULT NULL "
+  . ") ENGINE = MYISAM");
+
+$n_rows = 100000;
+echo "Inserting $n_rows rows ...\n";
+$start_time = microtime(true);
+for($i=1; $i < $n_rows + 1 ; $i++) {
+  $token = base_convert(sha1($i),7, 36);
+  mysql_query("INSERT INTO benchtable (id, token) VALUES (".$i.", '".$token."')");
+}
+$end_time = microtime(true);
+
+$insert_time = $end_time - $start_time;
+echo "Inserted $n_rows rows in " . $insert_time . " seconds \n";
+echo "Approx. " . $n_rows / $insert_time . " inserts per second\n\n";
+
+echo "Selecting $n_rows rows ...\n";
+$start_time = microtime(true);
+$result = mysql_query("select * FROM benchtable");
+$end_time = microtime(true);
+
+$select_time = $end_time - $start_time;
+echo "Selected $n_rows rows in " . $select_time . " seconds \n";
+echo "Approx. " . $n_rows / $select_time . " selects per second\n\n";
+
+echo "Updating $n_rows rows ...\n";
+$start_time = microtime(true);
+while($row = mysql_fetch_assoc($result)) {
+  $token = md5($row['token']);
+  mysql_query("UPDATE benchtable SET token='$token' WHERE id=" . $row['id']);
+}
+$end_time = microtime(true);
+
+$update_time = $end_time - $start_time;
+echo "Updated $n_rows rows in " . $update_time . " seconds \n";
+echo "Approx. " . $n_rows / $update_time . " updates per second\n";
+
+mysql_query('DROP DATABASE benchmark');
+
