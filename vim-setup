@@ -72,6 +72,14 @@ if [ ! -f ./colors/molokai.vim ] ; then
     wget "http://www.vim.org/scripts/download_script.php?src_id=9750" -O ./colors/molokai.vim
 fi
 
+if [ ! -f ./colors/solarized.vim ] ; then
+    wget "http://www.vim.org/scripts/download_script.php?src_id=15285" -O vim-colors-solarized-v1.0.0beta1.zip
+    unzip vim-colors-solarized-v1.0.0beta1.zip
+    mv vim-colors-solarized/colors/solarized.vim ./colors/
+    rm -rf vim-colors-solarized
+    rm vim-colors-solarized-v1.0.0beta1.zip
+fi
+
 #
 
 if [ ! -f ./plugin/symfony.vim ] ; then
