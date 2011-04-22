@@ -100,7 +100,8 @@ syntax on
 " available schemes : desert256, railscasts, wombat, wombat256, wombat256mod,
 "                     tango, django
 set t_Co=256
-colorscheme wombat256
+set background=dark
+colorscheme molokai
 
 " Identation and tabs
 set smartindent
@@ -219,11 +220,12 @@ if has('autocmd')
         autocmd FileType python set ft=python.django " For SnipMate
         autocmd FileType html set ft=htmldjango.html " For SnipMate
     endif
+    autocmd BufRead,BufNewFile *.twig setfiletype htmldjango.html
 endif
 if has("gui_running")
     highlight SpellBad term=underline gui=undercurl guisp=Orange
     set guifont=Inconsolata\ Medium\ 10
-    colorscheme molokai
+    colorscheme solarized
 endif
 
 " Invisible characters
