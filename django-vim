@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ ! -f tags ];
+then
+	ctags `find -iname '*.py'`
+fi
+
 PROJECT=$(python -c "import os; print os.path.basename(os.getcwd())")
 echo $PROJECT
 DJANGO_SETTINGS_MODULE=$PROJECT.settings gvim "+cd ." "+TlistAddFilesRecursive . [^_]*py\|*html\|*css" +TlistOpen

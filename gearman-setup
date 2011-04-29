@@ -1,0 +1,5 @@
+#/bin/bash
+#
+apt-get install gearman libgerman-dev php-pear python-gearman.libgearman
+pecl install channel://pecl.php.net/gearman-0.7.0
+
