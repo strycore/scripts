@@ -80,7 +80,6 @@ if [ ! -f ./colors/solarized.vim ] ; then
     rm vim-colors-solarized-v1.0.0beta1.zip
 fi
 
-#
 
 if [ ! -f ./plugin/symfony.vim ] ; then
     wget "http://www.vim.org/scripts/download_script.php?src_id=8739" -O ./plugin/symfony.vim
@@ -95,6 +94,11 @@ if [ ! -f ./plugin/zencoding.vim ] ; then
     wget "http://www.vim.org/scripts/download_script.php?src_id=13765" -O ./plugin/zencoding.vim
 fi
 
+#PHP Doc
+if [ ! -f ./plugin/php-doc.vim ] ; then
+    wget "http://www.vim.org/scripts/download_script.php?src_id=4666" -O ./plugin/php-doc.vim
+fi
+
 if [ ! -f ./plugin/snipMate.vim ] ; then
     wget "http://www.vim.org/scripts/download_script.php?src_id=11006" -O ./snipMate.zip
     unzip ./snipMate.zip
@@ -107,6 +111,7 @@ if [ ! -f ./plugin/surround.vim ] ; then
     rm ./surround.zip
 fi
 
+# Vala syntax
 if [ ! -f ./syntax/vala.vim ] ; then
     wget "http://live.gnome.org/Vala/Vim?action=AttachFile&do=get&target=vala.vim"  -O ./syntax/vala.vim
 fi
@@ -121,6 +126,7 @@ if [ ! -f ./snippets/htmldjango.snippets ] ; then
     cp snipmate_for_django/snippets/django.snippets ./snippets/
     rm -rf snipmate_for_django
 fi
+
 
 if [ ! -f $(which php_beautifier) ] ; then
     sudo pear install PHP_Beautifier-0.1.15

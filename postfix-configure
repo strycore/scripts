@@ -2,7 +2,7 @@
 
 set -e
 
-SERVER_NAME='a2v.a2v'
+SERVER_NAME='viscacha.a2v.net'
 
 COMPANY_NAME=$SERVER_NAME
 ORGANISATION='A2V Multimedia'

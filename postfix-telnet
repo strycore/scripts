@@ -4,11 +4,12 @@ import pexpect
 import sys
 import base64
 
-email_to = ""
+email_to = "mathieu@viscacha.a2v.net"
+#email_to = "strider@strycore.com"
 email_from = email_to
 login='mailer'
-password=''
-hostname = ''
+password='vt86Jzouba2D'
+hostname = 'localhost'
 
 telnet_session = pexpect.spawn('telnet ' + hostname + ' 25')
 telnet_session.logfile_read = sys.stdout
@@ -21,24 +22,25 @@ telnet_session.expect('VXNlcm5hbWU6', timeout=2)
 telnet_session.sendline(base64.b64encode(login))
 telnet_session.expect('UGFzc3dvcmQ6', timeout=2)
 telnet_session.sendline(base64.b64encode(password))
-index = telnet_session.expect(['successful', 'authentication failure'], timeout=5)
-if index == '0':
+index = telnet_session.expect(['succe', 'authentication failure'], timeout=5)
+if index == 0:
     print "auth ok"
 else:
-    print "auth failed :("
-telnet_session.sendline("mail from:<" + email_from + ">")
-telnet_session.expect('Ok')
-telnet_session.sendline('rcpt to:<' + email_to + '>')
-index = telnet_session.expect(['Ok', 'address rejected'])
-telnet_session.sendline('data')
+    print "auth failed with index ", index
+telnet_session.sendline("MAIL FROM:<" + email_from + ">")
+telnet_session.expect(['Ok', 'ok'])
+telnet_session.sendline('RCPT TO:<' + email_to + '>')
+index = telnet_session.expect(['Ok', 'ok', 'address rejected'])
+telnet_session.sendline('DATA')
+#telnet_session.sendline('Subject: Telnet test')
 telnet_session.sendline('This message was sent by telnet')
 telnet_session.sendline('kthxbye')
 telnet_session.sendline('.')
-if index == 0:
+if index == 0 or index == 1:
     print "SUCCESS"
-elif index == 1:
+elif index == 2:
     print "FAIL"
 else:
     print 'unknown error'
-telnet_session.sendline('quit')
+telnet_session.sendline('QUIT')
 

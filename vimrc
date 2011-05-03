@@ -210,7 +210,13 @@ if has('autocmd')
 
     " PHP parser check (CTRL-L)
     autocmd FileType php noremap <C-L> :!php -l %<CR>
+    " PHP Code Sniffer
     autocmd FileType php noremap <C-P> :!phpcs %<CR>
+
+    " Shortcuts to php-docs
+    autocmd FileType php inoremap <C-D> <ESC>:call PhpDocSingle()<CR>i
+    autocmd FileType php nnoremap <C-D> :call PhpDocSingle()<CR>
+    autocmd FileType php vnoremap <C-D> :call PhpDocRange()<CR>
 
     autocmd BufRead *.vala set efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
     autocmd BufRead *.vapi set efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
@@ -222,6 +228,7 @@ if has('autocmd')
     endif
     autocmd BufRead,BufNewFile *.twig setfiletype htmldjango.html
 endif
+
 if has("gui_running")
     highlight SpellBad term=underline gui=undercurl guisp=Orange
     set guifont=Inconsolata\ Medium\ 10

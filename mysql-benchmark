@@ -23,9 +23,9 @@ mysql_select_db('benchmark', $link);
 mysql_query("CREATE TABLE `benchmark`.`benchtable` "
   . "(`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,"
   . " `token` VARCHAR( 16 ) NULL DEFAULT NULL "
-  . ") ENGINE = MYISAM");
+  . ") ENGINE = INNODB");
 
-$n_rows = 100000;
+$n_rows = 1000;
 echo "Inserting $n_rows rows ...\n";
 $start_time = microtime(true);
 for($i=1; $i < $n_rows + 1 ; $i++) {

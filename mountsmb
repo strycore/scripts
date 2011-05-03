@@ -52,7 +52,7 @@ for share in ${SHARES[*]} ; do
         sudo mount.cifs $full_path ${DESTDIR}${share} \
                 -o credentials=$passfile,\
                 uid=$(id -u $USER),gid=$(id -g $USER),\
-                mask=022,user
+                mask=000,user
         fi
     fi
 done

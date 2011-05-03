@@ -18,6 +18,10 @@
 set -e
 
 text_file=$1
+if [ -z $text_file ]; then
+    text_file="/tmp/iso3166_en_code_lists.txt"
+    wget http://www.iso.org/iso/iso3166_en_code_lists.txt -O $text_file
+fi
 table='country_code'
 IFS=$(echo -en "\n\b")
 dest="$HOME/isocodes.yml"
