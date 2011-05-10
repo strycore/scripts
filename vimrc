@@ -232,7 +232,7 @@ endif
 if has("gui_running")
     highlight SpellBad term=underline gui=undercurl guisp=Orange
     set guifont=Inconsolata\ Medium\ 10
-    colorscheme solarized
+    colorscheme molokai
 endif
 
 " Invisible characters
@@ -253,6 +253,11 @@ noremap <silent> <C-Right> <C-]>
 
 noremap <C-S-PageUp> gt
 noremap <C-S-pageDown> gT
+
+map <kPlus> <C-W>+
+map <kMinus> <C-W>-
+map <kDivide> <c-w><
+map <kMultiply> <c-w>>
 
 " Remap autocompletion to Ctrl-Space
 inoremap <Nul> <C-x><C-o>
