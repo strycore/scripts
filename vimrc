@@ -174,9 +174,13 @@ let python_highlight_string_templates = 1
 
 filetype plugin on
 filetype indent on
+set completeopt=longest,menuone
+
 if has('autocmd')
     autocmd FileType make setlocal ts=8 sts=8 sw=8 noexpandtab "Makefiles require hard tabs
     autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+    autocmd FileType php setlocal ts=2 sts=2 sw=2 expandtab
+    autocmd FileType html setlocal ts=2 sts=2 sw=2 expandtab
 
     autocmd FileType c set omnifunc=ccomplete#Complete
 
