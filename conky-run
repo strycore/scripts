@@ -1,0 +1,3 @@
+#!/bin/bash
+sleep 3
+conky -c $HOME/bin/conky/rings
