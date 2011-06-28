@@ -18,17 +18,17 @@ fi
 #minor errors in the spelling of a directory
 #component in a cd command will be corrected.
 shopt -s cdspell
-#Bash attempts spelling correction on directory 
-#names during word completion if the directory 
-#name initially supplied does not exist. 
+#Bash attempts spelling correction on directory
+#names during word completion if the directory
+#name initially supplied does not exist.
 shopt -s dirspell
-#the history list is appended to the file 
-#named by the value of the HISTFILE variable 
-#when the shell exits, rather than overwriting 
+#the history list is appended to the file
+#named by the value of the HISTFILE variable
+#when the shell exits, rather than overwriting
 #the file.
 shopt -s histappend
-#Bash checks the window size after each command 
-#and, if necessary, updates the values of LINES 
+#Bash checks the window size after each command
+#and, if necessary, updates the values of LINES
 #and COLUMNS.
 shopt -s checkwinsize
 
@@ -96,6 +96,8 @@ alias hosts='$EDITOR /etc/hosts'
 alias sfba="./symfony doctrine:build --all --and-load"
 alias alert_helper='history|tail -n1|sed -e "s/^\s*[0-9]\+\s*//" -e "s/;\s*alert$//"'
 alias alert='notify-send -i /usr/share/icons/gnome/32x32/apps/gnome-terminal.png "[0] "'
+#Start urxvt and do whatever is needed to open the screen session named "main"
+alias scrurxvt="screen -ls | grep main && urxvt -name screen -e screen -x main || urxvt -name screen -e screen -R -S main"
 
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
