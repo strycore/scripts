@@ -31,6 +31,8 @@
 " Vim as a Python IDE
 " http://code.google.com/p/trespams-vim/
 
+" Howto setup vim ide for php development from @hameedullah
+" http://hameedullah.com/howto-setup-vim-ide-for-php-development.html
 "
 " Plugins
 " -------
@@ -92,7 +94,7 @@ set showmode
 set showmatch
 set statusline=%F%m%r%h%w\ [TYPE=%Y\ %{&ff}]\ [%l/%L\ (%p%%)]
 set laststatus=2          " always show status line
-set viminfo='1000,f1,:1000,/1000  " big viminfo :)
+set viminfo='100,f1,:1000,/1000,%  " big viminfo :)
 set mouse=a
 syntax on
 
@@ -124,16 +126,24 @@ set hlsearch   " highlight search terms
 nmap <silent> ,/ :nohlsearch<CR>
 set incsearch
 
-set foldmethod=indent
+set foldmethod=marker foldopen=all,insert foldclose=all
 set foldlevelstart=99
-set nofoldenable
 set nowrap
 set gdefault  " Search all occurrences by default
 set history=1000
 set undolevels=1000
+" Enable enhanced command line completion.
 set wildmenu
 set wildmode=longest:full,list
-set wildignore=*.swp,*.bak,*.pyc,*.class
+" Ignore these filenames during enhanced command line completion.
+set wildignore+=*.bak,*.class
+set wildignore+=*.aux,*.out,*.toc " LaTeX intermediate files
+set wildignore+=*.jpg,*.bmp,*.gif,*.png " binary images
+set wildignore+=*.luac " Lua byte code
+set wildignore+=*.o,*.obj,*.exe,*.dll,*.manifest " compiled object files
+set wildignore+=*.pyc " Python byte code
+set wildignore+=*.spl " compiled spelling word lists
+set wildignore+=*.sw? " Vim swap files
 set title
 set noerrorbells
 set nobackup    " Backup files are sooo 90's
@@ -148,7 +158,6 @@ set shortmess+=a
 set report=0
 set confirm
 set encoding=utf8
-set foldmethod=manual
 set matchpairs+=<:>
 set showfulltag
 
@@ -172,10 +181,21 @@ let python_highlight_builtin_objs = 1
 let python_highlight_doctests = 1
 let python_highlight_string_templates = 1
 
+let php_sql_query=1
+let php_htmlInStrings=1
+let g:php_folding=2
+
+" omnicomplete from: http://vim.wikia.com/wiki/VimTip1386
+"
+set completeopt=longest,menuone
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
+  \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+set complete+=kspellset
 filetype plugin on
 filetype indent on
-set completeopt=longest,menuone
 
+set omnifunc=syntaxcomplete#Complete
 if has('autocmd')
     autocmd FileType make setlocal ts=8 sts=8 sw=8 noexpandtab "Makefiles require hard tabs
     autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
