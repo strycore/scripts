@@ -1,9 +1,9 @@
 URxvt*depth: 32
 URxvt*background: rgba:2000/2000/2000/eeee
 URxvt*foreground: #DEDEDE
-URxvt*font: xft:Monospace:pixelsize=14
-URxvt*boldFont: xft:Monospace:bold:pixelsize=14
-URxvt*letterSpace: -1
+URxvt*font: xft:Inconsolata:pixelsize=14
+URxvt*boldFont: xft:Inconsolata:bold:pixelsize=14
+URxvt*letterSpace: 0
 URxvt*saveLines: 12000
 URxvt*scrollBar: false
 URxvt*scrollstyle: rxvt
