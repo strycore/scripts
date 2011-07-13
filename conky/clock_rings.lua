@@ -18,7 +18,7 @@ Conky, is it best to use "killall conky; conky" to update it, otherwise the
 update_num will not be reset and you will get an error.
 
 To call this script in Conky, use the following (assuming that you save this
-script to ~/scripts/rings.lua): 
+script to ~/scripts/rings.lua):
     lua_load ~/scripts/clock_rings-v1.1.1.lua
 	lua_draw_hook_pre clock_rings
 
@@ -113,7 +113,36 @@ settings_table = {
 		thickness=5,
 		start_angle=93,
 		end_angle=208
-	}, --[[
+	},
+	{
+		name='cpu',
+		arg='cpu2',
+		max=100,
+		bg_colour=0xffffff,
+		bg_alpha=0.2,
+		fg_colour=0xffffff,
+		fg_alpha=0.5,
+		x=160, y=155,
+		radius=87,
+		thickness=5,
+		start_angle=93,
+		end_angle=208
+	},
+	{
+		name='cpu',
+		arg='cpu3',
+		max=100,
+		bg_colour=0xffffff,
+		bg_alpha=0.2,
+		fg_colour=0xffffff,
+		fg_alpha=0.5,
+		x=160, y=155,
+		radius=93,
+		thickness=5,
+		start_angle=93,
+		end_angle=208
+	},
+    --[[
 	{
 		name='cpu',
 		arg='cpu0',
@@ -208,13 +237,13 @@ settings_table = {
 		fg_alpha=0.5,
 		x=160, y=155,
 		radius=105,
-		thickness=3,
+		thickness=5,
 		start_angle=-120,
 		end_angle=-13
 	},
 	{
 		name='fs_used_perc',
-		arg='/home',
+		arg='/media/sourcecode',
 		max=100,
 		bg_colour=0xffffff,
 		bg_alpha=0.2,
@@ -222,7 +251,7 @@ settings_table = {
 		fg_alpha=0.5,
 		x=160, y=155,
 		radius=105,
-		thickness=3,
+		thickness=5,
 		start_angle=-10,
 		end_angle=120
 	},
@@ -343,7 +372,7 @@ function conky_clock_rings()
 	if conky_window==nil then return end
 	local cs=cairo_xlib_surface_create(conky_window.display,
                                        conky_window.drawable,
-                                       conky_window.visual, 
+                                       conky_window.visual,
                                        conky_window.width,
                                        conky_window.height)
 

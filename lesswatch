@@ -1,0 +1,89 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# (c) 2011, Mathieu Comandon <strider@strycore.com>
+# License : GPL-3
+# For more information read : /usr/share/common-licenses/GPL-3
+#
+# Version 0.1
+#
+try:
+    import pyinotify
+except:
+    print "You need to install the python bindings for inotify (python-pyinotify)"
+    print "inotify is a Linux-only feature and is not available on other systems, sorry."
+    exit()
+
+import os
+import sys
+import time
+import glob
+import subprocess
+
+class color:
+    red = '\033[91m'
+    yellow = '\033[93m'
+    green = '\033[92m'
+    blue = '\033[94m'
+    purple = '\033[95m'
+    bold = '\033[1m'
+    none = '\033[0m'
+
+if len(sys.argv) > 1:
+    path = sys.argv[1]
+    if not os.path.exists(path):
+        print "Invalid path %s" % path
+        exit()
+else:
+    path = os.getcwd()
+
+#Read @import directives and find reverse dependencies
+lessfiles = glob.glob(path + '/*.less')
+imports = {}
+for lessfile in lessfiles:
+    line = "-"
+    less = file(lessfile)
+    while line:
+        line = less.readline()
+        if line.startswith("@import"):
+            less_base = os.path.basename(lessfile)
+            less_import = line[7:].strip("\"'; \t\n")
+            if less_import.endswith('.css'):
+                continue
+            elif not less_import.endswith('.less'):
+                less_import += ".less"
+            if not less_import in imports:
+                imports[less_import] = []
+            if not less_base in imports[less_import]:
+                imports[less_import].append(less_base)
+
+#Watch changes
+wm = pyinotify.WatchManager()
+mask = pyinotify.IN_MODIFY
+class EventHandler(pyinotify.ProcessEvent):
+    def compile_less(self, less_path):
+        less_file = os.path.basename(less_path)
+        target = less_path[:-4] + "css"
+        return_code = subprocess.call(['lessc', less_path, target])
+        if return_code == 0:
+            print color.green + "* Updated" + color.none, less_file
+        else:
+            print color.red + "! Syntax error in " + less_file + color.none
+
+    def process_IN_MODIFY(self, event):
+        if not event.pathname.endswith('.less'):
+            return
+        less_path = event.pathname
+        less_filename = os.path.basename(less_path)
+        print time.strftime("%H:%M:%S"), "-- Change detected in %s ..." % less_filename
+        if os.path.basename(less_path) not in imports:
+            self.compile_less(less_path)
+        else:
+            for less_base in imports[os.path.basename(less_path)]:
+                self.compile_less(os.path.join(os.path.dirname(less_path), less_base))
+
+handler = EventHandler()
+notifier = pyinotify.Notifier(wm, handler)
+wdd = wm.add_watch(path, mask, rec=True)
+print "* Watching for changes in %s... Ctrl-C to abort." % os.path.abspath(path)
+notifier.loop()
+

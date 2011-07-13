@@ -1,8 +1,0 @@
-startup_message off
-hardstatus alwayslastline "%{b kw}%H %{r}%1` %{w}| %{g}%c %{w}| %{y}%d.%m.%Y %{w}| %{g}%l %{w}| %{-b kw}%u %-Lw%{= rW}%50> %n%f %t %{-}%+Lw%<"
-screen -t root 0 sudo -s
-screen -t shell 1 bash
-screen -t shell 2 bash
-screen -t shell 3 bash
-screen -t shell 4 bash
-

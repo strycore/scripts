@@ -9,6 +9,7 @@ mkdir -p $HOME/.vim/plugin
 mkdir -p $HOME/.vim/colors
 mkdir -p $HOME/.vim/syntax
 mkdir -p $HOME/.vim/snippets
+mkdir -p $HOME/.vim/bundle
 
 cd $HOME/.vim
 
@@ -126,6 +127,13 @@ if [ ! -f ./snippets/htmldjango.snippets ] ; then
     cp snipmate_for_django/snippets/django.snippets ./snippets/
     rm -rf snipmate_for_django
 fi
+
+if [ ! -d ./bundle/pathogen ] ; then
+    echo "Pathogen not installed, fetching from github"
+    git clone https://github.com/tpope/vim-pathogen.git bundle/pathogen
+    ln -s $(pwd)/bundle/pathogen/autoload/pathogen.vim autoload/pathogen.vim
+fi
+
 
 
 if [ ! -f $(which php_beautifier) ] ; then
