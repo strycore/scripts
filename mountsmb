@@ -49,10 +49,8 @@ for share in ${SHARES[*]} ; do
             chown ${USER}:${USER} ${DESTDIR}${share}
             full_path="//"${SMB_HOST}/${share}
             echo $full_path
-        sudo mount.cifs $full_path ${DESTDIR}${share} \
-                -o credentials=$passfile,\
-                uid=$(id -u $USER),gid=$(id -g $USER),\
-                mask=000,user
+        sudo mount -t cifs -o credentials=$passfile,uid=$(id -u $USER),gid=$(id -g $USER) \
+        $full_path ${DESTDIR}${share}
         fi
     fi
 done
