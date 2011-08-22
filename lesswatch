@@ -6,6 +6,11 @@
 #
 # Version 0.1
 #
+
+# if you get a pynotify error try running :
+# sudo sysctl -n -w fs.inotify.max_user_watches=16384
+# https://github.com/seb-m/pyinotify/wiki/Frequently-Asked-Questions
+
 try:
     import pyinotify
 except:
