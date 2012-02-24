@@ -1,0 +1,14 @@
+#!/bin/bash
+# Reverts the recents changes made to the keyboard shortcuts for workspace
+# switching in Unity
+
+# Desktop switching
+gconftool --set /apps/compiz-1/plugins/wall/screen0/options/down_key --type string "<Control><Alt>Down"
+gconftool --set /apps/compiz-1/plugins/wall/screen0/options/up_key --type string "<Control><Alt>Up"
+gconftool --set /apps/compiz-1/plugins/wall/screen0/options/left_key --type string "<Control><Alt>Left"
+gconftool --set /apps/compiz-1/plugins/wall/screen0/options/right_key --type string "<Control><Alt>Right"
+
+gconftool --set /apps/compiz-1/plugins/wall/screen0/options/down_window_key --type string "<Control><Alt><Shift>Down"
+gconftool --set /apps/compiz-1/plugins/wall/screen0/options/up_window_key --type string "<Control><Alt><Shift>Up"
+gconftool --set /apps/compiz-1/plugins/wall/screen0/options/left_window_key --type string "<Control><Alt><Shift>Left"
+gconftool --set /apps/compiz-1/plugins/wall/screen0/options/right_window_key --type string "<Control><Alt><Shift>Right"
