@@ -14,5 +14,5 @@ APT="apt-get"
 echo "Updating cache"
 $SUDO $APT update
 echo "Upgrading system"
-$SUDO $APT dist-upgrade -y
+$SUDO $APT dist-upgrade -y --force-yes
 echo "Done"
