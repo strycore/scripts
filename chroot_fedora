@@ -1,0 +1,20 @@
+#!/bin/bash
+
+SYSTEM="fedora"
+DEVICE="/dev/sdc3"
+
+echo "Mounting filesystems"
+mkdir -p /tmp/$SYSTEM
+sudo mount $DEVICE /tmp/$SYSTEM
+sudo mount --bind /dev /tmp/${SYSTEM}/dev
+sudo mount -t proc /proc /tmp/${SYSTEM}/proc
+
+echo "Launching chroot"
+sudo chroot /tmp/${SYSTEM}
+
+echo "Leaving chroot, unmounting filesystems"
+sudo umount /tmp/${SYSTEM}/proc
+sudo umount /tmp/${SYSTEM}/dev
+sudo umount /tmp/${SYSTEM}
+rmdir /tmp/$SYSTEM
+echo "Done."
