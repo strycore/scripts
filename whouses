@@ -1,0 +1,7 @@
+#!/bin/bash
+
+lsof -Pnl +M -i4 | grep $1
+lsof -Pnl +M -i6 | grep $1
+netstat -tulpn | grep $1
+
+#curl -v localhost:$1
