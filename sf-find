@@ -1,0 +1,4 @@
+#!/bin/bash
+
+
+grep -ri --color --exclude-dir=cache --exclude-dir=log --exclude-dir=lib/vendor --exclude-dir=web $1 *
