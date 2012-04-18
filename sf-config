@@ -31,7 +31,7 @@ echo "App path: $APP_PATH"
 echo "Symfony path: $SYMFONY_PATH"
 echo "Is this correct? (y/N)"
 read ANSWER
-if [ $ANSWER != "y" ] ; then 
+if [ $ANSWER != "y" ] ; then
     exit 2
 fi
 SCRIPT_PATH=$(which $0)
@@ -57,4 +57,8 @@ if [ $(id -u) -eq 0 ] ; then
     /etc/init.d/apache2 reload
 else
     echo "can't copy the apache configuration, need root access"
+    echo "you can finish the site installation running these commands as root"
+    echo " cp /tmp/$APP_NAME /etc/apache2/sites-available/$APP_NAME"
+    echo " a2ensite $APP_NAME"
+    echo " /etc/init.d/apache2 reload"
 fi
