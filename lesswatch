@@ -23,6 +23,10 @@ import sys
 import time
 import glob
 import subprocess
+try:
+    from gi.repository import Notify
+except ImportError:
+    Notify = None
 
 class color:
     red = '\033[91m'
@@ -73,6 +77,13 @@ class EventHandler(pyinotify.ProcessEvent):
             print color.green + "* Updated" + color.none, less_file
         else:
             print color.red + "! Syntax error in " + less_file + color.none
+            if Notify:
+                Notify.init("LessCSS compile error")
+                compile_error_notify = Notify.Notification.new (
+                        "LessCSS compile error", "In file %s" % less_file,
+                        "dialog-error-symbolic"
+                        )
+                compile_error_notify.show()
 
     def process_IN_MODIFY(self, event):
         if not event.pathname.endswith('.less'):
