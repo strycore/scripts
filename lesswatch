@@ -68,21 +68,32 @@ for lessfile in lessfiles:
 #Watch changes
 wm = pyinotify.WatchManager()
 mask = pyinotify.IN_MODIFY
+error = False
 class EventHandler(pyinotify.ProcessEvent):
     def compile_less(self, less_path):
         less_file = os.path.basename(less_path)
         target = less_path[:-4] + "css"
         return_code = subprocess.call(['lessc', less_path, target])
         if return_code == 0:
+            if error = True:
+                compile_normal_notify = Notify.Notification.new(
+                    "LessCSS compile back to normal",
+                    "File %s has been fixed" % less_file,
+                    "info"
+                )
+                error = False
             print color.green + "* Updated" + color.none, less_file
+
         else:
             print color.red + "! Syntax error in " + less_file + color.none
             if Notify:
                 Notify.init("LessCSS compile error")
+                error = True
                 compile_error_notify = Notify.Notification.new (
-                        "LessCSS compile error", "In file %s" % less_file,
-                        "dialog-error-symbolic"
-                        )
+                    "LessCSS compile error",
+                    "In file %s" % less_file,
+                    "dialog-error-symbolic"
+                )
                 compile_error_notify.show()
 
     def process_IN_MODIFY(self, event):
