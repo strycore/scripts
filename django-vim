@@ -5,5 +5,11 @@ then
 	ctags `find -iname '*.py'`
 fi
 
+if [ -x mvim ] ; then
+    vim="mvim"
+else
+    vim="gvim"
+fi
+
 PROJECT=$(python -c "import os; print os.path.basename(os.getcwd())")
-DJANGO_SETTINGS_MODULE=$PROJECT.settings gvim "+cd ." 
+DJANGO_SETTINGS_MODULE=$PROJECT.settings $vim "+cd ."
