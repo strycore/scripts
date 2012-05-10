@@ -5,7 +5,7 @@ then
 	ctags `find -iname '*.py'`
 fi
 
-if [ -x mvim ] ; then
+if [ -x $(which mvim) ] ; then
     vim="mvim"
 else
     vim="gvim"
