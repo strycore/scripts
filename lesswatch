@@ -74,8 +74,9 @@ class EventHandler(pyinotify.ProcessEvent):
         less_file = os.path.basename(less_path)
         target = less_path[:-4] + "css"
         return_code = subprocess.call(['lessc', less_path, target])
+        global error
         if return_code == 0:
-            if error = True:
+            if error == True:
                 compile_normal_notify = Notify.Notification.new(
                     "LessCSS compile back to normal",
                     "File %s has been fixed" % less_file,

@@ -5,7 +5,8 @@ then
 	ctags `find -iname '*.py'`
 fi
 
-if [ -x $(which mvim) ] ; then
+if [[ -f $(which mvim) ]] ; then
+    echo "MacVim found"
     vim="mvim"
 else
     vim="gvim"
