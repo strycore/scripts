@@ -19,7 +19,7 @@ if [ $(hostname) = 'astoria' ] ; then
     SMB_HOST="newport"
 else
     DESTDIR="$HOME/Partages/"
-    SMB_HOST="192.168.33.11"
+    SMB_HOST="nagano"
     SHARES=('qweb' 'public')
 fi
 if [ ! -f $passfile ] ; then
