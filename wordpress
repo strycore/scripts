@@ -1,0 +1,91 @@
+#!/usr/bin/python
+import os
+from os.path import dirname, abspath, join, exists
+from platform import node
+import sys
+
+ROOT_DIR = dirname(dirname(abspath(__file__)))
+
+
+def clean_define(define):
+    _, output = define.split(",")
+    output = output.strip()
+    output = output.strip(";")
+    output = output.strip(")")
+    output = output.strip("'")
+    return output
+
+
+def read_wp_config():
+    config = file(join(ROOT_DIR, "wp-config.php"), "r").readlines()
+    db_settings = {}
+    for line in config:
+        if "DB_PASSWORD" in line:
+            db_settings['password'] = clean_define(line)
+        if "DB_USER" in line:
+            db_settings['user'] = clean_define(line)
+        if "DB_NAME" in line:
+            db_settings['name'] = clean_define(line)
+    return db_settings
+
+
+def inject_db():
+    dump_file = join(ROOT_DIR, "sql/%s.sql" % DB_SETTINGS["name"])
+    if not exists(dump_file):
+        raise ValueError("No dump found in %s" % dump_file)
+    dump_temp = join(ROOT_DIR, "sql/tempdump.sql")
+
+    with open(dump_file, "r") as dump:
+        lines = dump.readlines()
+    with open(dump_temp, "w") as dump:
+        for line in lines:
+            dump.write(line.replace("%HOSTNAME%", get_hostname() + "/" ))
+    cmd = "mysql -u%(user)s -p%(password)s %(name)s" % DB_SETTINGS + \
+          " < %s" % dump_temp
+    os.system(cmd)
+    os.remove(dump_temp)
+
+def dump_db():
+    dump_cmd = "mysqldump -u%(user)s -p%(password)s %(name)s" % DB_SETTINGS
+    dump_raw = join(ROOT_DIR, "sql/tempdump.sql")
+    dump_cmd = "%s > %s" % (dump_cmd, dump_raw)
+    os.system(dump_cmd)
+
+    dump_file = join(ROOT_DIR, "sql/%s.sql" % (DB_SETTINGS['name']))
+
+    with open(dump_raw, "r") as dump:
+        lines = dump.readlines()
+    with open(dump_file, "w") as dump:
+        for line in lines:
+            dump.write(line.replace(get_hostname(), "%HOSTNAME%"))
+    os.remove(dump_raw)
+
+
+def get_hostname():
+    current_host = "%s.%s" % (DB_SETTINGS["name"], node())
+    return current_host
+
+def create_db():
+    os.system("mysql-create-user -u %(name)s -p%(password)s" % DB_SETTINGS)
+
+
+def print_usage():
+    print "RTFS"
+    
+
+DB_SETTINGS = read_wp_config()
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print_usage()
+        exit(2)
+    command = sys.argv[1]
+    if command in ("dump", "save"):
+        dump_db()
+    elif command in ("inject", "load"):
+        inject_db()
+    elif command == "create":
+        create_db()
+    else:
+        print_usage
+
