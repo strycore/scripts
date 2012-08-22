@@ -3,7 +3,7 @@
 # mysql-create-user : Create a new user and database on your local mysql server
 #
 # Version 0.1 (2010/09/01)
-# (c) 2010 Mathieu Comandon 
+# (c) 2010 Mathieu Comandon
 # Licensed under the terms of the GPL Version 3
 #
 
@@ -12,7 +12,7 @@ set -e
 usage()
 {
 cat << EOF
-Usage: $0 --user=mysql_user --password=mysql_password 
+Usage: $0 --user=mysql_user --password=mysql_password
 Create a new user and database on your local mysql server
 
 OPTIONS:
@@ -23,19 +23,22 @@ OPTIONS:
 EOF
 }
 
+verbose=false
+
 #Parse arguments
 if [ "$#" -eq 0 ] ; then
     usage
     exit 2
 fi
-PARAMS=`getopt -n $0 -o u:p:r:h --long user:,password:,root-password:,help -- "$@"`
+PARAMS=`getopt -n $0 -o u:p:r:h:v --long user:,password:,root-password:,help,verbose -- "$@"`
 eval set -- "$PARAMS"
 while true ; do
     case "$1" in
         -u|--user) mysql_user=$2; shift 2 ;;
         -p|--password) mysql_password=$2 ; shift 2 ;;
-    -r|--root-password) root_password=$2 ; shift 2 ;;
+        -r|--root-password) root_password=$2 ; shift 2 ;;
         -h|--help) usage ; exit 1 ;;
+        -v|--verbose) verbose=true ; shift ;;
         --) shift ; break ;;
         *) usage ; exit 2 ;;
     esac
@@ -53,14 +56,15 @@ if [ -z "$mysql_password" ] ; then
     error_state=1
 fi
 
-if [ -z "$mysql_password" ] ; then
-    echo "You MUST specify MySQL password !"
-    error_state=1
-fi
-
 if [ "$error_state" = 1 ] ; then
     echo "There are errors in your arguments, exiting."
     exit 2
+fi
+
+if [ $verbose == true ]; then
+    echo "Creating user \"$mysql_user\" with associated database"
+    echo "Password: \"$mysql_password\""
+    echo "Root password: \"$root_password\""
 fi
 
 cd /tmp
@@ -73,5 +77,5 @@ cat > create_user.sql << EOF
  CREATE DATABASE IF NOT EXISTS $mysql_user character set utf8;
  GRANT ALL PRIVILEGES ON $mysql_user . * TO '$mysql_user'@'localhost';
 EOF
-mysql -uroot -p$root_password < create_user.sql
+mysql -uroot -p"$root_password" < create_user.sql
 rm create_user.sql

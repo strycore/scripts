@@ -1,11 +1,11 @@
 #!/bin/bash
 #
 # mysql-datadump : Dumps data from a MySQL database without the schema
-# This script is useful to update your DB schema and reimporting your 
+# This script is useful to update your DB schema and reimporting your
 # existing data.
 #
 # Version 0.1 (2010/07/21)
-# (c) 2010 Mathieu Comandon 
+# (c) 2010 Mathieu Comandon
 # Licensed under the terms of the GPL Version 3
 #
 
@@ -73,7 +73,7 @@ fi
 
 if [ ! -d "$destdir" ] ; then
     echo "Destination directory doesn't exist !"
-    error_state=1    
+    error_state=1
 fi
 
 if [ "$error_state" = 1 ] ; then
@@ -88,12 +88,12 @@ if [ "$compact" = 1 ] ; then
     compact_arg="--compact"
 fi
 #
-mysqldump --user $mysql_user --password=$mysql_password --skip-triggers --complete-insert --no-create-info $compact_arg  $mysql_database  > $dumpfile
+mysqldump --user "$mysql_user" --password="$mysql_password" --skip-triggers --complete-insert --no-create-info $compact_arg  $mysql_database  > $dumpfile
 
 #Gzip
 if [ $gzip_enable ] ; then
     gzip $dumpfile
-    dumpfile=$dumpfile".gz"    
+    dumpfile=$dumpfile".gz"
 fi
 
 #Finish
