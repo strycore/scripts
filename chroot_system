@@ -1,7 +1,12 @@
 #!/bin/bash
 
-SYSTEM="fedora"
-DEVICE="/dev/sdc3"
+
+SYSTEM=$1
+if [ $SYSTEM = 'fedora' ]; then
+    DEVICE="/dev/sdc3"
+elif [ $SYSTEM = 'ubuntu-devel' ]; then
+    DEVICE='/dev/sdb6'
+fi
 
 echo "Mounting filesystems"
 mkdir -p /tmp/$SYSTEM

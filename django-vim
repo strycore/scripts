@@ -6,4 +6,4 @@ then
 fi
 
 PROJECT=$(python -c "import os; print os.path.basename(os.getcwd())")
-DJANGO_SETTINGS_MODULE=$PROJECT.settings gvim "+cd ." 
+DJANGO_SETTINGS_MODULE=$PROJECT.settings gvim "+cd ."
