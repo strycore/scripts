@@ -1,16 +1,17 @@
 #!/bin/bash
 
-if [ ! -f tags ];
-then
-	ctags `find -iname '*.py'`
+
+if [[ "$VIRTUAL_ENV" ]]; then
+    source $VIRTUAL_ENV/bin/activate
+    export PYTHONPATH="$(python -c "import sys; print '.' + ':'.join(sys.path)")"
 fi
 
 if [[ -f $(which mvim) ]] ; then
     echo "MacVim found"
     vim="mvim"
 else
-    vim="gvim"
+    vim="gvim -f"
 fi
 
 PROJECT=$(python -c "import os; print os.path.basename(os.getcwd())")
-DJANGO_SETTINGS_MODULE=$PROJECT.settings $vim "+cd ."
+DJANGO_SETTINGS_MODULE=$PROJECT.settings $vim "+cd ." &
