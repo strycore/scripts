@@ -1,0 +1,2 @@
+#!/bin/bash
+for i in *.mpc ; do mpcdec "$i" - | lame -h -b 256 - "${i%mpc}mp3" ; done
