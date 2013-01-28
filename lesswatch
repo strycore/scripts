@@ -28,6 +28,7 @@ try:
 except ImportError:
     Notify = None
 
+
 class color:
     red = '\033[91m'
     yellow = '\033[93m'
@@ -69,6 +70,8 @@ for lessfile in lessfiles:
 wm = pyinotify.WatchManager()
 mask = pyinotify.IN_MODIFY
 error = False
+
+
 class EventHandler(pyinotify.ProcessEvent):
     def compile_less(self, less_path):
         less_file = os.path.basename(less_path)
@@ -76,7 +79,7 @@ class EventHandler(pyinotify.ProcessEvent):
         return_code = subprocess.call(['lessc', less_path, target])
         global error
         if return_code == 0:
-            if error == True:
+            if error is True:
                 compile_normal_notify = Notify.Notification.new(
                     "LessCSS compile back to normal",
                     "File %s has been fixed" % less_file,
@@ -90,7 +93,7 @@ class EventHandler(pyinotify.ProcessEvent):
             if Notify:
                 Notify.init("LessCSS compile error")
                 error = True
-                compile_error_notify = Notify.Notification.new (
+                compile_error_notify = Notify.Notification.new(
                     "LessCSS compile error",
                     "In file %s" % less_file,
                     "dialog-error-symbolic"
@@ -100,18 +103,19 @@ class EventHandler(pyinotify.ProcessEvent):
     def process_IN_MODIFY(self, event):
         if not event.pathname.endswith('.less'):
             return
+        cwd = os.getcwd()
         less_path = event.pathname
         less_filename = os.path.basename(less_path)
         print time.strftime("%H:%M:%S"), "-- Change detected in %s ..." % less_filename
-        if os.path.basename(less_path) not in imports:
-            self.compile_less(less_path)
-        else:
-            for less_base in imports[os.path.basename(less_path)]:
-                self.compile_less(os.path.join(os.path.dirname(less_path), less_base))
+        self.compile_less(less_path)
+        less_relative_path = less_path[len(cwd) + 1:]
+        for less_base in imports[less_relative_path]:
+            path = os.path.join(cwd, less_base)
+            print path
+            self.compile_less(path)
 
 handler = EventHandler()
 notifier = pyinotify.Notifier(wm, handler)
 wdd = wm.add_watch(path, mask, rec=True)
 print "* Watching for changes in %s... Ctrl-C to abort." % os.path.abspath(path)
 notifier.loop()
-
