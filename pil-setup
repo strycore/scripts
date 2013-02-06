@@ -1,10 +1,15 @@
 #!/bin/bash
 
-sudo apt-get install libjpeg-dev libfreetype6 libfreetype6-dev zlib1g-dev
+sudo apt-get install libjpeg62 libjpeg-dev libfreetype6 libfreetype6-dev zlib1g-dev
 
-sudo ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib
-sudo ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib
-sudo ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib
+if [ "$(uname -p)" == "i686" ]; then
+    arch="i386"
+else
+    arch="x86_64"
+fi
+sudo ln -s /usr/lib/$arch-linux-gnu/libjpeg.so /usr/lib
+sudo ln -s /usr/lib/$arch-linux-gnu/libfreetype.so /usr/lib
+sudo ln -s /usr/lib/$arch-linux-gnu/libz.so /usr/lib
 
 echo "PIL needs to be reinstalled"
 
