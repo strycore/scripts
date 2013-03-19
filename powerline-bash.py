@@ -16,9 +16,9 @@ class Color:
     # The following link is a pretty good resources for color values:
     # http://www.calmar.ws/vim/color-output.png
 
-    PATH_BG = 237  # dark grey
+    PATH_BG = 23  # dark grey
     PATH_FG = 250  # light grey
-    CWD_FG = 254  # nearly-white grey
+    CWD_FG = 6  # nearly-white grey
     SEPARATOR_FG = 244
 
     REPO_CLEAN_BG = 148  # a light green color
@@ -26,8 +26,8 @@ class Color:
     REPO_DIRTY_BG = 161  # pink/red
     REPO_DIRTY_FG = 15  # white
 
-    CMD_PASSED_BG = 236
-    CMD_PASSED_FG = 15
+    CMD_PASSED_BG = 24
+    CMD_PASSED_FG = 11
     CMD_FAILED_BG = 161
     CMD_FAILED_FG = 15
 
@@ -91,7 +91,7 @@ class Powerline:
 
 class Segment:
     def __init__(self, powerline, content, fg, bg, separator=None,
-            separator_fg=None):
+                 separator_fg=None):
         self.powerline = powerline
         self.content = content
         self.fg = fg
@@ -132,10 +132,13 @@ def add_cwd_segment(powerline, cwd, maxdepth, cwd_only=False):
 
     if not cwd_only:
         for n in names[:-1]:
-            powerline.append(Segment(powerline, ' %s ' % n, Color.PATH_FG,
-                Color.PATH_BG, powerline.separator_thin, Color.SEPARATOR_FG))
+            powerline.append(
+                Segment(powerline, ' %s ' % n, Color.PATH_FG,
+                        Color.PATH_BG, powerline.separator_thin,
+                        Color.SEPARATOR_FG)
+            )
     powerline.append(Segment(powerline, ' %s ' % names[-1], Color.CWD_FG,
-        Color.PATH_BG))
+                             Color.PATH_BG))
 
 
 def get_hg_status():
@@ -143,7 +146,7 @@ def get_hg_status():
     has_untracked_files = False
     has_missing_files = False
     output = subprocess.Popen(['hg', 'status'],
-            stdout=subprocess.PIPE).communicate()[0]
+                              stdout=subprocess.PIPE).communicate()[0]
     for line in output.split('\n'):
         if line == '':
             continue
@@ -176,15 +179,56 @@ def add_hg_segment(powerline, cwd):
     return True
 
 
+def get_bzr_status():
+    has_modified_files = False
+    has_untracked_files = False
+    has_missing_files = False
+    output = subprocess.Popen(['bzr', 'status', '-S'],
+                              stdout=subprocess.PIPE).communicate()[0]
+    for line in output.split('\n'):
+        if line == '':
+            continue
+        elif line[1] == 'M':
+            has_untracked_files = True
+        elif line[1] == 'D':
+            has_missing_files = True
+        else:
+            has_modified_files = True
+    return has_modified_files, has_untracked_files, has_missing_files
+
+
+def add_bzr_segment(powerline, cwd):
+    if not os.path.exists(".bzr"):
+        return False
+    revno = os.popen('bzr revno 2> /dev/null').read().strip()
+    bg = Color.REPO_CLEAN_BG
+    fg = Color.REPO_CLEAN_FG
+    has_modified_files, \
+        has_untracked_files, \
+        has_missing_files = get_bzr_status()
+    if has_modified_files or has_untracked_files or has_missing_files:
+        bg = Color.REPO_DIRTY_BG
+        fg = Color.REPO_DIRTY_FG
+        extra = ''
+        if has_untracked_files:
+            extra += '+'
+        if has_missing_files:
+            extra += '!'
+        revno += (' ' + extra if extra != '' else '')
+    powerline.append(Segment(powerline, ' r%s ' % revno, fg, bg))
+    return True
+
+
 def get_git_status():
     has_pending_commits = True
     has_untracked_files = False
     origin_position = ""
     output = subprocess.Popen(['git', 'status', '--ignore-submodules'],
-            stdout=subprocess.PIPE).communicate()[0]
+                              stdout=subprocess.PIPE).communicate()[0]
     for line in output.split('\n'):
         origin_status = re.findall(
-                r"Your branch is (ahead|behind).*?(\d+) comm", line)
+            r"Your branch is (ahead|behind).*?(\d+) comm", line
+        )
         if origin_status:
             origin_position = " %d" % int(origin_status[0][1])
             if origin_status[0][0] == 'behind':
@@ -260,7 +304,8 @@ def add_svn_segment(powerline, cwd):
 
 
 def add_repo_segment(powerline, cwd):
-    for add_repo_segment in (add_git_segment, add_svn_segment, add_hg_segment):
+    for add_repo_segment in (add_git_segment, add_svn_segment,
+                             add_hg_segment, add_bzr_segment):
         try:
             if add_repo_segment(p, cwd):
                 return
