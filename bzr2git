@@ -1,0 +1,5 @@
+#!/bin/bash
+git init                                        
+bzr fast-export --plain . | git fast-import    
+git co -f master                               
+rm -rf .bzr/  
