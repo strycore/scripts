@@ -7,7 +7,7 @@ in a MySQL database.
 Copyright: 2010, Mathieu Comandon <strycore@gmail.com>
 License : GPL-V3
 
-CREATE TABLE IF NOT EXISTS `postfix_log` (
+CREATE TABLE IF NOT EXISTS `mail_tracking` (
       `id` int(11) NOT NULL AUTO_INCREMENT,
       `from_` varchar(255) NOT NULL,
       `to_` varchar(255) DEFAULT NULL,
