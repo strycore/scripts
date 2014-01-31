@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sudo dpkg-reconfigure tzdata
+sudo apt-get install zsh curl
+
+curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
