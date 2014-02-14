@@ -1,0 +1,25 @@
+#!/usr/bin/python3
+# Restore the file hierarchy inside a Linux trash
+# Moves everything into a 'restored' folder
+import configparser
+import os
+import shutil
+
+config = configparser.RawConfigParser()
+
+if not os.path.exists('restored'):
+    os.mkdir('restored')
+
+for info in os.listdir("info"):
+    config.read("info/" + info)
+    path = str(config.get('Trash Info', 'Path'))
+    sourcename, _ext = os.path.splitext(info)
+    sourcefile = "files/" + sourcename
+    if not os.path.exists(sourcefile):
+        continue
+    directory = os.path.dirname(path)
+    target_dir = os.path.join('restored', directory)
+    target = os.path.join('restored', path)
+    if not os.path.exists(target_dir):
+        os.makedirs(target_dir)
+    shutil.move(sourcefile, target)
