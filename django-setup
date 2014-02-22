@@ -1,5 +1,5 @@
 sudo apt-get update
-sudo apt-get install git bzr mercurial python-setuptools python-dev
+sudo apt-get install -y git bzr mercurial python-setuptools python-dev make
 sudo easy_install pip
 sudo pip install pip -U
 sudo pip install virtualenvwrapper -U
