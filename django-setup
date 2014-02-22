@@ -5,3 +5,15 @@ sudo pip install pip -U
 sudo pip install virtualenvwrapper -U
 sudo pip install flake8 -U
 sudo pip install pylint -U
+
+# Set up node.js and npm
+if [ -z "$(which npm)" ]; then
+    if [ "$(lsb_release -is)" == "Ubuntu" ]; then
+        sudo apt-get -y install software-properties-common
+        sudo add-apt-repository -y ppa:chris-lea/node.js
+        sudo apt-get update
+        sudo apt-get install -y nodejs
+    else
+        echo "Please install latest version of nodejs and npm."
+    fi
+fi
