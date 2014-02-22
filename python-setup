@@ -1,0 +1,6 @@
+sudo apt-get install python-setuptools
+sudo easy_install pip
+sudo pip install pip -U
+sudo pip install virtualenvwrapper -U
+sudo pip install flake8 -U
+sudo pip install pylint -U
