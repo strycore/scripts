@@ -7,6 +7,7 @@ sudo pip install pip -U
 sudo pip install virtualenvwrapper -U
 sudo pip install flake8 -U
 sudo pip install pylint -U
+sudo pip install ipython -U
 
 # Set up node.js and npm
 if [ -z "$(which npm)" ]; then
