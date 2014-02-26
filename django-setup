@@ -1,5 +1,7 @@
+#!/bin/bash
+
 sudo apt-get update
-sudo apt-get install -y git bzr mercurial python-setuptools python-dev make
+sudo apt-get install -y git bzr mercurial python-setuptools python-dev make python3-dev
 sudo easy_install pip
 sudo pip install pip -U
 sudo pip install virtualenvwrapper -U
@@ -8,7 +10,7 @@ sudo pip install pylint -U
 
 # Set up node.js and npm
 if [ -z "$(which npm)" ]; then
-    if [ "$(lsb_release -is)" == "Ubuntu" ]; then
+    if [ "$(lsb_release -is)" = "Ubuntu" ]; then
         sudo apt-get -y install software-properties-common
         sudo add-apt-repository -y ppa:chris-lea/node.js
         sudo apt-get update
