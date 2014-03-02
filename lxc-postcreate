@@ -1,6 +1,11 @@
 #!/bin/bash
+USERNAME=strider
+dpkg-reconfigure tzdata
+apt-get install zsh curl
 
-sudo dpkg-reconfigure tzdata
-sudo apt-get install zsh curl
+deluser ubuntu --remove-home
+adduser $USERNAME --shell /usr/bin/zsh --uid 1000 --gid 1000
+usermod -G sudo $USERNAME
 
+cd /home/$USERNAME
 curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
