@@ -11,9 +11,7 @@ sudo apt-get install -y git python python-dev \
     postgresql postgresql-client python-psycopg2
 
 sudo apt-get install -y python-gst0.10 gstreamer0.10-plugins-base gstreamer0.10-plugins-bad gstreamer0.10-plugins-good gstreamer0.10-plugins-ugly gstreamer0.10-ffmpeg
-sudo apt-get install -y python-numpy python-scipy
-sudo apt-get install -y python-numpy libsndfile-dev
-sudo apt-get install -y libsndfile1-dev libasound2-dev
+sudo apt-get install -y python-numpy python-scipy libsndfile1-dev libasound2-dev
 
 sudo easy_install pip
 sudo pip install virtualenv -U
