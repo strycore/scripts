@@ -29,7 +29,7 @@ sudo chown -hR mediagoblin:mediagoblin DogmaGoblin
 cd $PROJECT_ROOT/DogmaGoblin
 sudo -u $USER git checkout $BRANCH
 
-sudo -u postgres createuser -R -S $USER
+sudo -u postgres createuser -R -S -D $USER
 sudo -u postgres createdb -E UNICODE -O mediagoblin mediagoblin
 
 if [ ! -f mediagoblin_local.ini ]; then
