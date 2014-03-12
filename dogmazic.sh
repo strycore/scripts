@@ -6,12 +6,13 @@ PROJECT_ROOT="/srv/dogmazic"
 BRANCH='dg-next'
 USER=mediagoblin
 
-sudo apt-get install -y git python python-dev python-lxml python-imaging python-virtualenv libxml2-dev libxslt-dev
-sudo apt-get install -y postgresql postgresql-client python-psycopg2
+sudo apt-get install -y git python python-dev \
+    python-setuptools libxml2-dev libxslt-dev \
+    postgresql postgresql-client python-psycopg2
 
 sudo apt-get install -y python-gst0.10 gstreamer0.10-plugins-base gstreamer0.10-plugins-bad gstreamer0.10-plugins-good gstreamer0.10-plugins-ugly gstreamer0.10-ffmpeg
 sudo apt-get install -y python-numpy python-scipy
-sudo apt-get install -y python-dev python-numpy python-setuptools libsndfile-dev
+sudo apt-get install -y python-numpy libsndfile-dev
 sudo apt-get install -y libsndfile1-dev libasound2-dev
 
 sudo adduser  --system --group --shell /bin/bash $USER
@@ -25,7 +26,7 @@ sudo chown -hR mediagoblin:mediagoblin DogmaGoblin
 cd $PROJECT_ROOT/DogmaGoblin
 sudo -u $USER git checkout $BRANCH
 
-sudo -u postgres createuser mediagoblin
+sudo -u postgres createuser -R -S $USER
 sudo -u postgres createdb -E UNICODE -O mediagoblin mediagoblin
 
 if [ ! -f mediagoblin_local.ini ]; then
