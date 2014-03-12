@@ -15,6 +15,9 @@ sudo apt-get install -y python-numpy python-scipy
 sudo apt-get install -y python-numpy libsndfile-dev
 sudo apt-get install -y libsndfile1-dev libasound2-dev
 
+sudo easy_install pip
+sudo pip install virtualenv -U
+
 sudo adduser  --system --group --shell /bin/bash $USER
 
 sudo mkdir -p $PROJECT_ROOT
