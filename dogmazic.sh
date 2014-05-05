@@ -13,7 +13,7 @@ sudo apt-get install -y git python python-dev \
 sudo apt-get install -y python-gst0.10 gstreamer0.10-plugins-base \
     gstreamer0.10-plugins-bad gstreamer0.10-plugins-good \
     gstreamer0.10-plugins-ugly gstreamer0.10-ffmpeg \
-    libsndfile1-dev libasound2-dev
+    libsndfile1-dev libasound2-dev libblas-dev liblapack-dev
 
 sudo apt-get install -y python-numpy
 
