@@ -2,10 +2,10 @@
 
 set -e
 
-SERVER_NAME='viscacha.a2v.net'
+SERVER_NAME='mail.strycore.com'
 
 COMPANY_NAME=$SERVER_NAME
-ORGANISATION='A2V Multimedia'
+ORGANISATION='Strycore'
 COUNTRY='FR'
 STATE="Aquitaine"
 CITY="Bordeaux"
@@ -35,8 +35,8 @@ cd /tmp
 touch smtpd.key
 chmod 600 smtpd.key
 openssl genrsa 1024 > smtpd.key
-openssl req -new -key smtpd.key -subj '/CN=www.a2v.eu/O=A2V/C=FR/ST=Aquitaine/L=Bordeaux/CN=Mathieu Comandon' -x509 -days 3650 -out smtpd.crt
-openssl req -new -x509 -extensions v3_ca -keyout cakey.pem -out cacert.pem -subj '/CN=www.a2v.eu/O=A2V/C=FR/ST=Aquitaine/L=Bordeaux/CN=Mathieu Comandon' -days 3650
+openssl req -new -key smtpd.key -subj '/CN=www.strycore.com/O=A2V/C=FR/ST=Aquitaine/L=Bordeaux/CN=Mathieu Comandon' -x509 -days 3650 -out smtpd.crt
+openssl req -new -x509 -extensions v3_ca -keyout cakey.pem -out cacert.pem -subj '/CN=www.strycore.com/O=Strycore/C=FR/ST=Aquitaine/L=Bordeaux/CN=Mathieu Comandon' -days 3650
 mv smtpd.key /etc/ssl/private/
 mv smtpd.crt /etc/ssl/certs/
 mv cakey.pem /etc/ssl/private/
