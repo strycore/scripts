@@ -77,5 +77,5 @@ cat > create_user.sql << EOF
  CREATE DATABASE IF NOT EXISTS $mysql_user character set utf8;
  GRANT ALL PRIVILEGES ON $mysql_user . * TO '$mysql_user'@'localhost';
 EOF
-mysql -uroot -p"$root_password" < create_user.sql
+mysql -u root -p "$root_password" < create_user.sql
 rm create_user.sql

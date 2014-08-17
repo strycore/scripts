@@ -3,5 +3,5 @@
 backup_dir="/srv/backup/sql/"
 backup_date=$(date +%Y-%m-%d-%H-%M)
 dump_file=${backup_dir}mysql-alldump-${backup_date}.sql
-mysqldump -uroot -p --all-databases > $dump_file
+mysqldump -u root -p --all-databases > $dump_file
 gzip $dump_file
