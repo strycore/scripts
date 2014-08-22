@@ -2,14 +2,17 @@
 
 set -e
 
-SMTP_USER=user
-SMTP_PASSWORD=password
+user=${SMTP_USER:-$USER}
+host=${SMTP_HOST:-localhost}
+port=${SMTP_PORT:-25}
+echo -n "Password:"
+read -s password
 EMAIL=strycore@gmail.com
-USER_HASH=$(printf $SMTP_USER | base64)
-PASSWORD_HASH=$(printf $SMTP_PASSWORD | base64)
+USER_HASH=$(printf $user | base64)
+PASSWORD_HASH=$(printf $password | base64)
 
-echo "Testing saslauthd standalone. Root privileges required"
-sudo testsaslauthd -u $SMTP_USER -p $SMTP_PASSWORD
+#echo "Testing saslauthd standalone. Root privileges required"
+# sudo testsaslauthd -u $user -p $SMTP_PASSWORD
 
 cat << EOF
 Opening telnet connection for testing postfix
@@ -32,4 +35,4 @@ quit
 EOF
 
 echo 'now type: ehlo localhost'
-telnet localhost 25
+telnet $host $port
