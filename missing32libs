@@ -1,6 +1,6 @@
 #!/bin/bash
-needed_libs=$(readelf -d $1 | grep NEEDED | grep -o -e "\[.*\]" | tr -d "[]")
-available_libs=$(ldconfig -p | grep -e "lib32\|i386\|libx32" | awk '{print $1}' | uniq | sort)
+needed_libs=$(readelf -d $1 | awk -F'[][]' '/NEEDED/{print $2}')
+available_libs=$(ldconfig -p | awk '/lib32|i386|libx32/{print $1}' | sort -u)
 
 for l in $needed_libs
 do
