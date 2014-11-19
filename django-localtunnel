@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+#
+# Localtunnel for Django
+#
+# Use the localtunnel.me service to expose your local server to the outside
+# This scripts updates a Django Site object (named 'localhost') to your
+# Localtunnel URL.
+#
+import os
+import sys
+import time
+import signal
+import subprocess
+try:
+    from django.contrib.sites.models import Site
+except ImportError:
+    print("Run from an activated Django virtualenv")
+    sys.exit(1)
+
+PORT = '8000'
+PID = None
+LOGFILE = '/tmp/localtunnel.out'
+
+
+def set_localhost(domain):
+    try:
+        site = Site.objects.get(name='localhost')
+    except Site.DoesNotExist:
+        print("Create a Site with name 'localhost'")
+    else:
+        site.domain = domain
+        site.save()
+
+
+def exit_handler(s, f):
+    if PID:
+        print("\nExiting localtunnel (%s)" % PID)
+        os.kill(PID, signal.SIGKILL)
+        set_localhost('localhost:%s' % PORT)
+    sys.exit(0)
+signal.signal(signal.SIGINT, exit_handler)
+
+
+log = open(LOGFILE, 'w')
+proc = subprocess.Popen(['lt', '--port', PORT], stdout=log)
+time.sleep(1)
+log.close()
+
+with open(LOGFILE, 'r') as log:
+    logcontent = log.read()
+
+localtunnel_url = logcontent.split()[-1]
+localtunnel_domain = localtunnel_url.split('/')[-1]
+set_localhost(localtunnel_domain)
+
+PID = proc.pid
+print("The server on port %s is now available at %s" % (PORT, localtunnel_url))
+print("(Press Ctrl+C to exit)")
+proc.wait()
