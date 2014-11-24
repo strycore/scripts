@@ -1,0 +1,8 @@
+#!/usr/bin/node
+
+var ngrok = require('ngrok');
+var port = 8000;
+
+ngrok.connect(port, function (err, url) {
+    console.log(url);
+});

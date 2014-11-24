@@ -42,7 +42,7 @@ signal.signal(signal.SIGINT, exit_handler)
 
 
 log = open(LOGFILE, 'w')
-proc = subprocess.Popen(['lt', '--port', PORT], stdout=log)
+proc = subprocess.Popen(['ngrok-start'], stdout=log)
 time.sleep(1)
 log.close()
 
