@@ -1,10 +1,10 @@
 arch=$(uname -i)
 
 if [ $arch = 'x86_64' ]; then
-    slsk_url="http://www.soulseekqt.net/SoulseekQT/Linux/SoulseekQt-2013-11-6-64bit.tgz"
+    slsk_url="http://www.soulseekqt.net/SoulseekQT/Linux/SoulseekQt-2014-11-30-64bit.tgz"
     exec_suffix='-64bit'
 else
-    slsk_url="http://www.soulseekqt.net/SoulseekQT/Linux/SoulseekQt-2013-11-6.tgz"
+    slsk_url="http://www.soulseekqt.net/SoulseekQT/Linux/SoulseekQt-2014-11-30-32bit.tgz"
     exec_suffix=''
 fi
 
@@ -24,7 +24,7 @@ cat <<EOF
 Comment=
 Terminal=false
 Name=Soulseek
-Exec=${dest_path}SoulseekQt-2013-11-6${exec_suffix}
+Exec=${dest_path}SoulseekQt-2014-11-30${exec_suffix}
 Type=Application
 Icon=soulseek
 EOF
