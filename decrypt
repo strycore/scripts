@@ -1,4 +1,11 @@
 #!/bin/bash
+#
+# decrypt : Decrypt files encrypted with the encrypt command
+#
+# Version 0.1 (2015/6/5)
+# (c) 2015 Mathieu Comandon
+# Licensed under the terms of the GPL Version 3
+#
 
 IFS=$'\n'
 set -e
@@ -9,7 +16,6 @@ mkdir -p ${dest}
 shift
 
 read -s -p "Password" password
-echo "$password"
 
 for f in $@; do
     echo $f
