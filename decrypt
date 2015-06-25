@@ -8,7 +8,6 @@
 #
 
 IFS=$'\n'
-set -e
 
 dest=$1
 echo "extracting files to ${dest}"
