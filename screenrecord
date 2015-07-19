@@ -1,0 +1,9 @@
+#!/bin/bash
+
+WIDTH=1920
+HEIGHT=1080
+
+XPOSITION=$WIDTH
+YPOSITION=$HEIGHT
+
+ffmpeg -f alsa -ac 1 -i pulse -f x11grab -r 30 -s $WIDTHx$HEIGHT -i :0.0+$XPOSITION,$YPOSITION -acodec libmp3lame -ac 2 -ab 320k -threads 4 -vcodec mpeg2video -b:v 20000k -preset ultrafast -tune zerolatency -crf 0 $1
