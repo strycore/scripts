@@ -1,9 +1,22 @@
 #!/bin/bash
 
+FFMPEG='ffmpeg'
+
 WIDTH=1920
 HEIGHT=1080
+FRAMERATE=60
 
 XPOSITION=$WIDTH
 YPOSITION=$HEIGHT
 
-ffmpeg -f alsa -ac 1 -i pulse -f x11grab -r 30 -s $WIDTHx$HEIGHT -i :0.0+$XPOSITION,$YPOSITION -acodec libmp3lame -ac 2 -ab 320k -threads 4 -vcodec mpeg2video -b:v 20000k -preset ultrafast -tune zerolatency -crf 0 $1
+#VIDEO_CODEC='nvenc'
+VIDEO_CODEC='libx264'
+ENCODER_OPTIONS='-preset ultrafast -crf 0 -tune zerolatency'
+
+
+#ffmpeg -framerate 60 -video_size 1920x1080 -f x11grab -i :0.0 -vcodec libx264 -preset ultrafast -b:v 90000k output.mp4
+$FFMPEG -f alsa -ac 2 -i pulse -acodec mp3 \
+    -threads 4 -framerate $FRAMERATE -video_size ${WIDTH}x${HEIGHT} \
+    -f x11grab -i :0.0 \
+    -vcodec $VIDEO_CODEC -b:v 20000k $ENCODER_OPTIONS \
+    -strict -2 $1
