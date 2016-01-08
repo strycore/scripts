@@ -1,0 +1,32 @@
+#!/bin/bash
+
+PARAMS=$(getopt -n $0 -o 6,4 --long 64,32 -- "$@")
+eval set -- "$PARAMS"
+
+while true; do
+    case "$1" in
+        -3|--32) libs="/lib32|i386|libx32/"; shift ;;
+        -6|--64) libs="/x86-64|x86_64/"; shift ;;
+        --) shift ; break;;
+    esac
+done
+
+executable=$1
+
+needed_libs=$(readelf -d $executable | awk -F'[][]' '/NEEDED/{print $2}')
+available_libs=$(ldconfig -p | awk $libs'{print $1}' | sort -u)
+
+for l in $needed_libs
+do
+    needed=1
+    for a in $available_libs
+    do
+        if [ "$l" = "$a" ]; then
+            needed=0
+            break
+        fi
+    done
+    if [ $needed = 1 ]; then
+        echo "Missing $l"
+    fi
+done
