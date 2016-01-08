@@ -9,14 +9,22 @@ FRAMERATE=60
 XPOSITION=$WIDTH
 YPOSITION=$HEIGHT
 
-#VIDEO_CODEC='nvenc'
 VIDEO_CODEC='libx264'
 ENCODER_OPTIONS='-preset ultrafast -crf 0 -tune zerolatency'
 
+#VIDEO_CODEC='nvenc'
+#ENCODER_OPTIONS='-preset slow -b:v 20M -maxrate 10M -bufsize 10M' # -bf 2 -ref 1'
 
-#ffmpeg -framerate 60 -video_size 1920x1080 -f x11grab -i :0.0 -vcodec libx264 -preset ultrafast -b:v 90000k output.mp4
-$FFMPEG -f alsa -ac 2 -i pulse -acodec mp3 \
-    -threads 4 -framerate $FRAMERATE -video_size ${WIDTH}x${HEIGHT} \
-    -f x11grab -i :0.0 \
-    -vcodec $VIDEO_CODEC -b:v 20000k $ENCODER_OPTIONS \
-    -strict -2 $1
+sleep 4
+
+#ffmpeg -f x11grab -i :0.0 -vcodec libx264 -preset ultrafast -b:v 90000k output.mp4
+$FFMPEG \
+    -y \
+    -video_size ${WIDTH}x${HEIGHT} -framerate ${FRAMERATE} \
+    -f x11grab -i :0.0+0,0 \
+    -threads 4 \
+    -thread_queue_size 500 \
+    -f alsa -ac 2 -i pulse \
+    -vcodec $VIDEO_CODEC $ENCODER_OPTIONS \
+    -strict -2 \
+    $1
