@@ -1,4 +1,7 @@
-arch=$(uname -i)
+#!/bin/bash
+set -e
+
+arch=$(uname -m)
 
 if [ $arch = 'x86_64' ]; then
     slsk_url="http://www.soulseekqt.net/SoulseekQT/Linux/SoulseekQt-2014-11-30-64bit.tgz"
@@ -9,14 +12,15 @@ else
 fi
 
 dest_path="/opt/soulseek/"
-mkdir -p $dest_path
-slsk_archive="soulseek-client.tar.gz"
-wget $slsk_url -O ${dest_path}${slsk_archive}
+sudo mkdir -p $dest_path
+slsk_archive="/tmp/soulseek-client.tar.gz"
+wget $slsk_url -O "${slsk_archive}"
 cd $dest_path
-tar xzf ${slsk_archive}
-rm ${slsk_archive}
+sudo tar xzf ${slsk_archive}
+rm "${slsk_archive}"
 
-cd ~/.local/share/applications/
+desktop_path="~/.local/share/applications/"
+cd $desktop_path
 
 (
 cat <<EOF
@@ -29,3 +33,5 @@ Type=Application
 Icon=soulseek
 EOF
 ) > soulseek.desktop
+chmod +x soulseek.desktop
+update-desktop-database $desktop_path
