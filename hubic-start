@@ -1,0 +1,13 @@
+#!/bin/bash
+
+dbus_session_path="/tmp/hubic-dbus"
+if [ -f $dbus_session_path ]; then
+    export DBUS_SESSION_BUS_ADDRESS="$(cat $dbus_session_path)"
+else
+    export DBUS_SESSION_BUS_ADDRESS="$(dbus-daemon --session --fork --print-address)"
+    echo $DBUS_SESSION_BUS_ADDRESS > $dbus_session_path
+fi
+
+echo "Starting hubiC..."
+echo $DBUS_SESSION_BUS_ADDRESS
+hubic start
