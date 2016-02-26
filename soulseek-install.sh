@@ -2,12 +2,13 @@
 set -e
 
 arch=$(uname -m)
+version="2015-6-25"
 
 if [ $arch = 'x86_64' ]; then
-    slsk_url="http://www.soulseekqt.net/SoulseekQT/Linux/SoulseekQt-2014-11-30-64bit.tgz"
+    slsk_url="http://www.soulseekqt.net/SoulseekQT/Linux/SoulseekQt-${version}-64bit.tgz"
     exec_suffix='-64bit'
 else
-    slsk_url="http://www.soulseekqt.net/SoulseekQT/Linux/SoulseekQt-2014-11-30-32bit.tgz"
+    slsk_url="http://www.soulseekqt.net/SoulseekQT/Linux/SoulseekQt-${version}-32bit.tgz"
     exec_suffix=''
 fi
 
@@ -19,8 +20,8 @@ cd $dest_path
 sudo tar xzf ${slsk_archive}
 rm "${slsk_archive}"
 
-desktop_path="~/.local/share/applications/"
-cd $desktop_path
+desktop_path="$HOME/.local/share/applications/"
+cd "$desktop_path"
 
 (
 cat <<EOF
@@ -28,7 +29,7 @@ cat <<EOF
 Comment=
 Terminal=false
 Name=Soulseek
-Exec=${dest_path}SoulseekQt-2014-11-30${exec_suffix}
+Exec=${dest_path}SoulseekQt-${version}${exec_suffix}
 Type=Application
 Icon=soulseek
 EOF
