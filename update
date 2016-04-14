@@ -9,10 +9,10 @@
 set -e
 
 SUDO="sudo"
-APT="apt-get"
+APT="apt"
 
 echo "Updating cache"
 $SUDO $APT update
 echo "Upgrading system"
-$SUDO $APT dist-upgrade -y --force-yes
+$SUDO $APT full-upgrade -y
 echo "Done"
