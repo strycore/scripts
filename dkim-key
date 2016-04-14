@@ -1,0 +1,26 @@
+#!/bin/bash
+
+domain=$1
+selector="mail"
+
+if [ ! $domain ];then
+    echo "Domain name must be provided (dkim-key domain.com)"
+    exit 2
+fi
+
+mkdir -pv /etc/opendkim/$domain/
+chown -Rv opendkim:opendkim /etc/opendkim
+chmod go-rwx /etc/opendkim/*
+
+cd /etc/opendkim/$domain/
+opendkim-genkey -r -h sha256 -d $domain -s $selector
+mv -v mail.private $selector
+chown opendkim:opendkim *
+chmod u=rw,go-rwx *
+
+echo "$domain $domain:mail:/etc/opendkim/$domain/$selector" >> /etc/opendkim/KeyTable
+echo "*@$domain $domain" >> /etc/opendkim/SigningTable
+echo "$domain" >> /etc/opendkim/TrustedHosts
+
+echo "Now add this TXT record in the DNS configuration for $domain"
+cat mail.txt
