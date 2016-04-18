@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Copy this script to /etc/network/if-post-down.d/
+
+killall transmission-gtk
