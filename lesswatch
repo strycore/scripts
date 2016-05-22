@@ -46,7 +46,7 @@ if len(sys.argv) > 1:
 else:
     path = os.getcwd()
 
-#Read @import directives and find reverse dependencies
+# Read @import directives and find reverse dependencies
 lessfiles = glob.glob(path + '/*.less')
 imports = {}
 for lessfile in lessfiles:
@@ -61,12 +61,12 @@ for lessfile in lessfiles:
                 continue
             elif not less_import.endswith('.less'):
                 less_import += ".less"
-            if not less_import in imports:
+            if less_import not in imports:
                 imports[less_import] = []
-            if not less_base in imports[less_import]:
+            if less_base not in imports[less_import]:
                 imports[less_import].append(less_base)
 
-#Watch changes
+# Watch changes
 wm = pyinotify.WatchManager()
 mask = pyinotify.IN_MODIFY
 error = False
@@ -85,6 +85,7 @@ class EventHandler(pyinotify.ProcessEvent):
                     "File %s has been fixed" % less_file,
                     "info"
                 )
+                compile_normal_notify.show()
                 error = False
             print color.green + "* Updated" + color.none, less_file
 
