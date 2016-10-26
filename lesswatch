@@ -68,7 +68,7 @@ for lessfile in lessfiles:
 
 # Watch changes
 wm = pyinotify.WatchManager()
-mask = pyinotify.IN_MODIFY
+mask = pyinotify.IN_MODIFY | pyinotify.IN_DELETE | pyinotify.IN_CREATE
 error = False
 
 
