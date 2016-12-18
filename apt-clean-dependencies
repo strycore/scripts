@@ -1,0 +1,40 @@
+#!/usr/bin/env python
+# Check for unneeded dependencies in a dependency list of apt packages
+
+import apt
+import sys
+
+SEPARATOR = "\n" + "=" * 80 + "\n"
+
+pkg_list = sys.argv[1:]
+cache = apt.Cache()
+missing = []
+extra_dependencies = set()
+
+
+def get_dependency_pkg_names(dependency):
+    dependency_versions = dependency.target_versions
+    return [version.package.name for version in dependency_versions]
+
+
+for pkg_name in pkg_list:
+    package = cache.get(pkg_name)
+    if not package:
+        missing.append(pkg_name)
+        continue
+    version = package.versions[0]
+    for dependency in version.dependencies:
+        for pkg in get_dependency_pkg_names(dependency):
+            if pkg in pkg_list:
+                extra_dependencies.add(pkg)
+
+print SEPARATOR
+print "Missing packages: \n{}".format(" ".join(missing))
+
+print SEPARATOR
+print "Unneeded dependencies: \n{}".format(" ".join(extra_dependencies))
+
+print SEPARATOR
+print "Cleaned dependency list: \n{}".format(
+    " ".join(sorted(set(pkg_list) - extra_dependencies))
+)
