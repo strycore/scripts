@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if [ "$DESKTOP_SESSION" = "gnome" ]; then
+    xbindkeys_autostart
+fi
