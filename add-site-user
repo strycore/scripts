@@ -1,3 +1,0 @@
-#!/bin/bash
-
-sudo useradd -s /bin/false -d /nonexistent -g www-data $1
