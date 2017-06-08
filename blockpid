@@ -1,0 +1,73 @@
+#!/bin/bash
+
+set -e
+
+CGROUP_NAME=blockpid
+CGROUP_CLASSID=42
+CGROUP_ROOT=/sys/fs/cgroup/net_cls
+CGROUP_PATH=$CGROUP_ROOT/$CGROUP_NAME
+
+function usage {
+    cat << EOF
+Usage: $0 [pid]
+Block all network traffic from a pid
+
+Options:
+    -u, --unblock        Unblock a pid (use 'all' to unblock everything)
+EOF
+}
+
+function SetupCGroup {
+    mkdir $CGROUP_PATH
+    echo $CGROUP_CLASSID > $CGROUP_PATH/net_cls.classid
+    iptables -A OUTPUT -m cgroup --cgroup $CGROUP_CLASSID -j DROP
+}
+
+function BlockPid {
+    local pid=$1
+
+    if [ ! -d $CGROUP_PATH ]; then
+        SetupCGroup
+    fi
+    if [ ! -d /proc/$pid ]; then
+        echo "$pid isn't a valid PID"
+        exit 2
+    fi
+    echo "Blocking all network traffic for $(readlink /proc/$pid/exe)"
+    echo $pid > $CGROUP_PATH/tasks
+}
+
+function UnblockPid {
+    local pid=$1
+    if [ "$pid" == "all" ]; then
+        echo "Unblocking all pids"
+        cd $CGROUP_PATH
+        for pid in $(cat tasks); do echo $pid > ../tasks; done
+    else
+        echo "Unblocking pid $pid"
+        echo $pid > $CGROUP_ROOT/tasks
+    fi
+}
+
+PARAMS=`getopt -n $0 -o uh --long unblock,help -- "$@"`
+eval set -- "$PARAMS"
+while true ; do
+    case "$1" in
+        -u|--unblock) unblock=1; shift ;;
+        -h|--help) usage ; exit 1 ;;
+        --) pid=$2 ; shift ; break ;;
+        *) usage ; exit 2 ;;
+    esac
+done
+
+if [ ! "$pid" ]; then
+    usage
+    exit 2
+fi
+
+if [ "$unblock" = "1" ]; then
+    UnblockPid $pid
+else
+    BlockPid $pid
+fi
+
