@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+
+import os
+from collections import defaultdict
+
+import requests
+from aptsources import sourceslist
+
+
+IGNORE_DISABLED = True
+SHOW_SUPPORTED = True
+TARGET_DIST = 'artful'
+
+
+def get_sources():
+    sources = defaultdict(list)
+    for source in sourceslist.SourcesList():
+        sources[source.file].append(source)
+    return sources
+
+
+def get_distro(distro_info):
+    if '-' not in distro_info:
+        return (distro_info, '')
+    return distro_info.split('-', 1)
+
+
+for path, sources in get_sources().items():
+    for src in sources:
+        if src.invalid or src.type == 'deb-src':
+            continue
+        if IGNORE_DISABLED and src.disabled:
+            continue
+
+        if any(domain in src.uri for domain in ['ubuntu.com', 'canonical.com']):
+            continue
+        repo_url = os.path.join(src.uri, 'dists', TARGET_DIST)
+        response = requests.get(repo_url)
+
+        if response.status_code == 200:
+            if SHOW_SUPPORTED:
+                print(repo_url, response.status_code)
+        elif not SHOW_SUPPORTED:
+            print(repo_url, response.status_code)
