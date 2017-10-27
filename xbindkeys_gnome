@@ -1,5 +1,5 @@
 #!/bin/bash
 
-if [ "$DESKTOP_SESSION" = "gnome" ]; then
+if [[ "$DESKTOP_SESSION" == "gnome" || "$DESKTOP_SESSION" == "pop-xorg" ]]; then
     xbindkeys_autostart
 fi
