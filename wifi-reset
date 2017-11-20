@@ -14,7 +14,7 @@ if [ "$?" -eq 0 ]; then
     logger -t $tag "$interface is not ready"
     if [ -z "$(iwgetid --raw $interface)" ]; then
         logger -t $tag "$interface is not connected to any network"
-        modprobe -r iwlwifi
-        modprobe iwlwifi
+        modprobe -r ath10k_pci
+        modprobe ath10k_pci
     fi
-fi    
+fi
