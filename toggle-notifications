@@ -1,0 +1,10 @@
+#!/bin/bash
+
+current_state=$(gsettings get org.gnome.desktop.notifications show-banners)
+if [[ $current_state == 'true' ]]; then
+    new_state='false'
+else
+    new_state='true'
+fi
+
+gsettings set org.gnome.desktop.notifications show-banners $new_state
