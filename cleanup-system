@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+# Purge residual configs
+sudo apt purge $(dpkg -l | grep '^rc' | awk '{print $2}')
+
+# Trim down systemd log
+sudo journalctl --vacuum-size=200M
+
+# Clear APT cache
+sudo apt clean
+
+# Clear crash reports
+sudo rm /var/crash/*
