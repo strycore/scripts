@@ -64,9 +64,9 @@ def update_srcinfo(version, release_hash):
 
 def update_aur(version):
     """Update AUR files"""
-    release_hash = get_hash(version)
     if not os.path.exists("lutris_%s.tar.xz" % version):
         fetch_version(version)
+    release_hash = get_hash(version)
     update_pkgbuild(version, release_hash)
     update_srcinfo(version, release_hash)
 
