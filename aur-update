@@ -1,0 +1,75 @@
+#!/usr/bin/python3
+"""Utility script to update Lutris PKGBUILD"""
+import os
+import sys
+import hashlib
+import requests
+
+RELEASE_URL = "https://lutris.net/releases/lutris_%s.tar.xz"
+
+
+def fetch_version(version):
+    """Download lutris archive"""
+    file_dest = "lutris_%s.tar.xz" % version
+    if os.path.exists(file_dest):
+        raise OSError("File already exists")
+
+    response = requests.get(RELEASE_URL % version)
+    with open("lutris_%s.tar.xz" % version, 'wb') as release_archive:
+        release_archive.write(response.content)
+
+
+def get_hash(version):
+    """Return SHA256 checksum for release archive"""
+    file_dest = "lutris_%s.tar.xz" % version
+    if not os.path.exists(file_dest):
+        raise OSError("$s does not already exists" % file_dest)
+    with open(file_dest, 'rb') as release_archive:
+        content = release_archive.read()
+    return hashlib.sha256(content).hexdigest()
+
+
+def update_pkgbuild(version, release_hash):
+    """Update PKGBUILD for new version"""
+    new_pkgbuild_lines = []
+    with open('PKGBUILD', 'r') as pkgbuild:
+        for line in pkgbuild.readlines():
+            if line.startswith("pkgver="):
+                line = "pkgver=%s\n" % version
+            elif line.startswith("sha256sums"):
+                line = "sha256sums=('%s')\n" % release_hash
+            new_pkgbuild_lines.append(line)
+    with open('PKGBUILD', 'w') as pkgbuild_new:
+        pkgbuild_new.writelines(new_pkgbuild_lines)
+
+
+def update_srcinfo(version, release_hash):
+    """Update .SRCINFO for new version"""
+    new_srcinfo_lines = []
+    with open('.SRCINFO', 'r') as srcinfo:
+        for line in srcinfo.readlines():
+            if 'pkgver = ' in line:
+                line_prefix, _ = line.split(' = ')
+                line = "%s = %s\n" % (line_prefix, version)
+            elif 'source = ' in line:
+                line_prefix, _ = line.split(' = ')
+                line = "%s = %s\n" % (line_prefix, RELEASE_URL % version)
+            elif 'sha256sums = ' in line:
+                line_prefix, _ = line.split(' = ')
+                line = "%s = %s\n" % (line_prefix, release_hash)
+            new_srcinfo_lines.append(line)
+    with open('.SRCINFO', 'w') as srcinfo:
+        srcinfo.writelines(new_srcinfo_lines)
+
+
+def update_aur(version):
+    """Update AUR files"""
+    release_hash = get_hash(version)
+    if not os.path.exists("lutris_%s.tar.xz" % version):
+        fetch_version(version)
+    update_pkgbuild(version, release_hash)
+    update_srcinfo(version, release_hash)
+
+
+if __name__ == '__main__':
+    update_aur(sys.argv[1])
