@@ -2,6 +2,9 @@
 
 set -e
 
+# Auto remove packages
+sudo apt autoremove --purge
+
 # Purge residual configs
 sudo apt purge $(dpkg -l | grep '^rc' | awk '{print $2}')
 
