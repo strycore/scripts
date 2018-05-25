@@ -1,0 +1,54 @@
+#!/bin/bash
+
+set -e
+
+
+move() {
+    if [[ -e ~/.local/share/lutris.b ]]; then
+        exit 2
+    fi
+    mv ~/.local/share/lutris ~/.local/share/lutris.b
+    mv ~/.cache/lutris ~/.cache/lutris.b
+    mv ~/.config/lutris ~/.config/lutris.b
+}
+
+restore() {
+    if [[ ! -e ~/.local/share/lutris.b ]]; then
+        exit 2
+    fi
+    if [[ -e ~/.local/share/lutris.test ]]; then
+        exit 2
+    fi
+    mv ~/.local/share/lutris ~/.local/share/lutris.test
+    mv ~/.cache/lutris ~/.cache/lutris.test
+    mv ~/.config/lutris ~/.config/lutris.test
+
+    mv ~/.local/share/lutris.b ~/.local/share/lutris
+    mv ~/.cache/lutris.b ~/.cache/lutris
+    mv ~/.config/lutris.b ~/.config/lutris
+}
+
+clean() {
+    rm -rf ~/.local/share/lutris.test
+    rm -rf ~/.cache/lutris.test
+    rm -rf ~/.config/lutris.test
+}
+
+info() {
+    du -h --max-depth=0 ~/.local/share/lutris*
+}
+
+sql() {
+    sqliteman ~/.local/share/lutris/pga.db
+}
+
+help() {
+    echo "Commands:"
+    echo "move: Moves the lutris files to a safe directory"
+    echo "restore: Restores the original lutris files"
+    echo "clean: Remove the test environment"
+    echo "info: Prints the current setup"
+    echo "sql: opens the lutris db in sqliteman"
+}
+
+$1
