@@ -5,8 +5,10 @@ set -e
 
 move() {
     if [[ -e ~/.local/share/lutris.b ]]; then
+        echo "Destination already exists"
         exit 2
     fi
+    echo "Moving production files to a safe location"
     mv ~/.local/share/lutris ~/.local/share/lutris.b
     mv ~/.cache/lutris ~/.cache/lutris.b
     mv ~/.config/lutris ~/.config/lutris.b
@@ -14,21 +16,28 @@ move() {
 
 restore() {
     if [[ ! -e ~/.local/share/lutris.b ]]; then
+        echo "Production files are already present"
         exit 2
     fi
     if [[ -e ~/.local/share/lutris.test ]]; then
+        echo "Test files are already present"
         exit 2
     fi
-    mv ~/.local/share/lutris ~/.local/share/lutris.test
-    mv ~/.cache/lutris ~/.cache/lutris.test
-    mv ~/.config/lutris ~/.config/lutris.test
+    echo "Saving test environment"
+    if [ -d ~/.local/share/lutris ]; then
+        mv  ~/.local/share/lutris~/.local/share/lutris.test
+        mv ~/.cache/lutris ~/.cache/lutris.test
+        mv ~/.config/lutris ~/.config/lutris.test
+    fi
 
+    echo "Restoring production settings"
     mv ~/.local/share/lutris.b ~/.local/share/lutris
     mv ~/.cache/lutris.b ~/.cache/lutris
     mv ~/.config/lutris.b ~/.config/lutris
 }
 
 clean() {
+    echo "Clearing test environment"
     rm -rf ~/.local/share/lutris.test
     rm -rf ~/.cache/lutris.test
     rm -rf ~/.config/lutris.test
@@ -42,6 +51,12 @@ sql() {
     sqliteman ~/.local/share/lutris/pga.db
 }
 
+reset() {
+    echo "Resetting environment"
+    restore
+    clean
+    move
+}
 help() {
     echo "Commands:"
     echo "move: Moves the lutris files to a safe directory"
