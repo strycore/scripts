@@ -25,7 +25,7 @@ restore() {
     fi
     echo "Saving test environment"
     if [ -d ~/.local/share/lutris ]; then
-        mv  ~/.local/share/lutris~/.local/share/lutris.test
+        mv ~/.local/share/lutris ~/.local/share/lutris.test
         mv ~/.cache/lutris ~/.cache/lutris.test
         mv ~/.config/lutris ~/.config/lutris.test
     fi
