@@ -45,6 +45,8 @@ clean() {
 
 info() {
     du -h --max-depth=0 ~/.local/share/lutris*
+    du -h --max-depth=0 ~/.config/lutris*
+    du -h --max-depth=0 ~/.cache/lutris*
 }
 
 sql() {
