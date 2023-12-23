@@ -2,15 +2,19 @@
 
 set -e
 
-if [[ "$1" == "monitor" ]]; then 
-    xrandr --output HDMI-A-1 --off --output DisplayPort-2 --primary --mode 2560x1440 --rate 144 --right-of HDMI-A-1 
+
+TV_OUT="HDMI-A-1"
+PC_OUT="DP-3"
+
+if [[ "$1" == "monitor" ]]; then
+    xrandr --output $TV_OUT --off --output $PC_OUT --primary --mode 2560x1440 --rate 144 --right-of $TV_OUT
 fi
 
-if [[ "$1" == "tv" ]]; then 
-    xrandr --output HDMI-A-1 --primary --mode 1920x1080 --rate 60 --left-of DisplayPort-2 --output DisplayPort-2 --off
+if [[ "$1" == "tv" ]]; then
+    xrandr --output $TV_OUT --primary --mode 1920x1080 --rate 60 --left-of $PC_OUT --output $PC_OUT --off
 fi
 
-if [[ "$1" == "both" ]]; then 
-    xrandr --output HDMI-A-1 --mode 1920x1080 --rate 60 --left-of DisplayPort-2 --output DisplayPort-2 --primary --mode 2560x1440 --rate 144
+if [[ "$1" == "both" ]]; then
+    xrandr --output $TV_OUT --mode 1920x1080 --rate 60 --left-of $PC_OUT --output $PC_OUT --primary --mode 2560x1440 --rate 144
 fi
 
