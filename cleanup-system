@@ -2,17 +2,18 @@
 
 set -e
 
-# Auto remove packages
-sudo apt autoremove --purge
+if [[ "$(which apt)" ]] then
+    # Auto remove packages
+    sudo apt autoremove --purge
 
-# Purge residual configs
-sudo apt purge $(dpkg -l | grep '^rc' | awk '{print $2}')
+    # Purge residual configs
+    sudo apt purge $(dpkg -l | grep '^rc' | awk '{print $2}')
 
+    # Clear APT cache
+    sudo apt clean
+fi
 # Trim down systemd log
 sudo journalctl --vacuum-size=200M
-
-# Clear APT cache
-sudo apt clean
 
 # Clear crash reports
 sudo rm /var/crash/*
