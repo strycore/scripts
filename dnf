@@ -1,0 +1,15 @@
+#!/bin/bash
+# Simple wrapper script for DNF that lets people not worry about which commands have been ported to DNF 5 and which haven't.
+# Install: sudo cp dnf /usr/local/bin
+# Remove: sudo rm /usr/local/bin/dnf
+
+dnf4_commands=(check check-update provides repository-packages shell whatprovides config-manager debug-dump debug-restore debuginfo-install groups-manager needs-restarting offline-distrosync offline-upgrade playground repoclosure repodiff repograph repomanage reposync system-upgrade)
+
+if [[ " ${dnf4_commands[*]} " =~ [[:space:]]${1}[[:space:]] ]]; then
+    DNF=dnf4
+else
+    DNF=dnf5
+fi
+
+$DNF $*
+exit $?
